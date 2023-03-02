@@ -1,0 +1,14 @@
+CREATE TABLE TaskList (
+   id INTEGER NOT NULL,
+   name TEXT NOT NULL
+);
+
+INSERT INTO TaskList (id, name)
+VALUES (0, 'Personal');
+
+INSERT INTO TaskList (id, name)
+VALUES (1, 'Business');
+
+selectAllTasks:
+SELECT id, name
+FROM TaskList;

@@ -1,0 +1,19 @@
+CREATE TABLE Task (
+  id INTEGER PRIMARY KEY NOT NULL,
+  listId INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  notes TEXT NOT NULL,
+  completedDate TEXT NOT NULL DEFAULT "0",
+  hidden INTEGER NOT NULL
+);
+
+getallTasksByListId:
+SELECT *
+FROM Task WHERE listId = :listId AND hidden = 0;
+
+insertTask:
+INSERT INTO Task(id, listId, name, notes, completedDate, hidden)
+VALUES (?,?, ?, ?, ?, ?);
+
+deleteTaskById:
+DELETE FROM Task WHERE id = :id;
