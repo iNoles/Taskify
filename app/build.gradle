@@ -50,8 +50,8 @@ android {
 
 sqldelight {
     databases {
-        Database { // This will be the name of the generated database class.
-            packageName = "com.jonathansteele"
+        create("Database") { // This will be the name of the generated database class.
+            packageName.set("com.jonathansteele")
         }
     }
 }
