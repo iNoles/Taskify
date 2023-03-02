@@ -1,7 +1,7 @@
 TaskList Android App [Work in progress 🚧]
 ==================
 
-KnightsFootball is a fully functional Android app built entirely with Kotlin and Jetpack Compose
+TaskList is a fully functional Android app built entirely with Kotlin and Jetpack Compose
 with SQLDelight.
 
 The app is currently in early stage development and is not yet available on the Play Store.
