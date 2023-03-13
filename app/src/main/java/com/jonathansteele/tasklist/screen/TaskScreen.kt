@@ -8,11 +8,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -125,8 +129,17 @@ fun ListPagerContent(
                                 }
                             })
                     },
-                    headlineText = { Text(text = task.name) },
-                    supportingText = { Text(text = task.notes) },
+                    headlineContent = { Text(text = task.name) },
+                    supportingContent = { Text(text = task.notes) },
+                    trailingContent = {
+                        IconButton(onClick = {
+                            coroutineScope.launch {
+                                database.deleteTask(task.id)
+                            }
+                        }) {
+                            Icon(Icons.Filled.Delete, "Delete")
+                        }
+                    }
                 )
             }
         }
