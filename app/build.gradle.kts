@@ -57,7 +57,7 @@ sqldelight {
 }
 
 dependencies {
-    val composeBom = platform("androidx.compose:compose-bom:2023.04.01")
+    val composeBom = platform("androidx.compose:compose-bom:2023.05.00")
     implementation(composeBom)
     implementation("androidx.core:core-ktx:1.10.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
