@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 /**
- * DataHelper
+ * DatabaseHelper
  * This class act like a helper between application and sqldelight
  */
 class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
