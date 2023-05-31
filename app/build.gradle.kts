@@ -71,7 +71,7 @@ dependencies {
     implementation("app.cash.sqldelight:android-driver:2.0.0-alpha05")
     implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-alpha05")
     implementation("dev.olshevski.navigation:reimagined-material3:1.4.0")
-    implementation("io.insert-koin:koin-android:3.4.0")
+    implementation("io.insert-koin:koin-android:3.4.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
