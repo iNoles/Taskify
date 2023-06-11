@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "com.jonathansteele.tasklist"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.jonathansteele.tasklist"
         minSdk = 26
-        targetSdk = 33
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -68,8 +68,8 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
-    implementation("app.cash.sqldelight:android-driver:2.0.0-alpha05")
-    implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-alpha05")
+    implementation("app.cash.sqldelight:android-driver:2.0.0-rc01")
+    implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc01")
     implementation("dev.olshevski.navigation:reimagined-material3:1.4.0")
     implementation("io.insert-koin:koin-android:3.4.2")
     testImplementation("junit:junit:4.13.2")
