@@ -1,8 +1,9 @@
+package com.jonathansteele.tasklist
+
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.jonathansteele.Database
-import com.jonathansteele.tasklist.DatabaseHelper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals

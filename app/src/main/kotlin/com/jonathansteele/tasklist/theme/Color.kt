@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist.ui.theme
+package com.jonathansteele.tasklist.theme
 import androidx.compose.ui.graphics.Color
 
 val md_theme_light_primary = Color(0xFF6750A4)

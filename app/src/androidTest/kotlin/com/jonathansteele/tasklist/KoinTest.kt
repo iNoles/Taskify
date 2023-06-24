@@ -1,3 +1,5 @@
+package com.jonathansteele.tasklist
+
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.jonathansteele.tasklist.di.appModules
 import org.junit.Test

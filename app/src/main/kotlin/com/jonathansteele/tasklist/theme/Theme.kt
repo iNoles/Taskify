@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist.ui.theme
+package com.jonathansteele.tasklist.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

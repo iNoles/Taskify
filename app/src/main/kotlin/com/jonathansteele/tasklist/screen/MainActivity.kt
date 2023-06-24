@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.jonathansteele.tasklist.DatabaseHelper
 import com.jonathansteele.tasklist.navigation.AppNavigation
-import com.jonathansteele.tasklist.ui.theme.TaskListTheme
+import com.jonathansteele.tasklist.theme.TaskListTheme
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {
