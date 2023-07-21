@@ -6,8 +6,8 @@ import kotlinx.parcelize.Parcelize
 sealed class Screen : Parcelable {
 
     @Parcelize
-    object Task : Screen()
+    data object Task : Screen()
 
     @Parcelize
-    object Add : Screen()
+    data object Add : Screen()
 }

@@ -20,7 +20,6 @@ class DatabaseTest {
         helper = DatabaseHelper(driver)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun insertTest() = runTest {
         var numItemsBeforeInsertion = -1
