@@ -69,7 +69,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation("app.cash.sqldelight:android-driver:2.0.0-rc02")
-    implementation("app.cash.sqldelight:coroutines-extensions:2.0.0-rc02")
+    implementation("app.cash.sqldelight:coroutines-extensions:2.0.0")
     implementation("dev.olshevski.navigation:reimagined-material3:1.4.0")
     implementation("io.insert-koin:koin-android:3.4.2")
     testImplementation("junit:junit:4.13.2")
