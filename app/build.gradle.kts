@@ -70,7 +70,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("app.cash.sqldelight:android-driver:2.0.0")
     implementation("app.cash.sqldelight:coroutines-extensions:2.0.0")
-    implementation("dev.olshevski.navigation:reimagined-material3:1.4.0")
+    implementation("dev.olshevski.navigation:reimagined-material3:1.5.0")
     implementation("io.insert-koin:koin-android:3.4.3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
