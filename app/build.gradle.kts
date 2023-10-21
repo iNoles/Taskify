@@ -72,6 +72,16 @@ dependencies {
     implementation("app.cash.sqldelight:coroutines-extensions:2.0.0")
     implementation("dev.olshevski.navigation:reimagined-material3:1.5.0")
     implementation("io.insert-koin:koin-android:3.5.0")
+
+    // For Glance support
+    implementation("androidx.glance:glance:1.0.0")
+
+    // For AppWidgets support
+    implementation("androidx.glance:glance-appwidget:1.0.0")
+
+    // For interop APIs with Material 3
+    implementation("androidx.glance:glance-material3:1.0.0")
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

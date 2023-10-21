@@ -20,7 +20,10 @@ class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
         database.listQueries.selectAllTasks().executeAsList()
 
     fun getAllTasksBySpecificPageId(page: Int): Flow<List<Task>> =
-        database.taskQueries.getallTasksByListId(page.toLong()).asFlow().mapToList(Dispatchers.IO)
+        database.taskQueries.getAllTasksByListId(page.toLong()).asFlow().mapToList(Dispatchers.IO)
+
+    fun getTopTaskNames(): List<String> =
+        database.taskQueries.GetTop3TasksName().executeAsList()
 
     suspend fun insertTask(name: String, notes: String, listId: Long, id: Long? = null, hidden: Long) {
         withContext(Dispatchers.IO) {

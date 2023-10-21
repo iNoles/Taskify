@@ -69,7 +69,9 @@ fun TaskListScreen(navController: NavController<Screen>, databaseHelper: Databas
 fun GetListTitleFromDatabase(
     database: DatabaseHelper,
 ) {
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState {
+        database.getAllPages().size
+    }
     val coroutineScope = rememberCoroutineScope()
     val pages = database.getAllPages()
     TabRow(
@@ -88,10 +90,7 @@ fun GetListTitleFromDatabase(
         }
     }
 
-    HorizontalPager(
-        pageCount = pages.size,
-        state = pagerState,
-    ) { page ->
+    HorizontalPager(state = pagerState) { page ->
         val content = remember {
             database.getAllTasksBySpecificPageId(page)
         }

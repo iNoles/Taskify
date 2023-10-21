@@ -7,9 +7,13 @@ CREATE TABLE Task (
   hidden INTEGER NOT NULL
 );
 
-getallTasksByListId:
+getAllTasksByListId:
 SELECT *
 FROM Task WHERE listId = :listId AND hidden = 0;
+
+GetTop3TasksName:
+SELECT name
+FROM Task WHERE completedDate = '0' ORDER BY completedDate DESC LIMIT 3;
 
 insertTask:
 INSERT OR REPLACE INTO Task(id, listId, name, notes, completedDate, hidden)
