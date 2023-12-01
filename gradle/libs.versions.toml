@@ -1,7 +1,7 @@
 [versions]
 androidxComposeBom = "2023.10.01"
 activityCompose = "1.8.1"
-androidDriver = "2.0.0"
+androidDriver = "2.0.1"
 coreKtx = "1.12.0"
 espressoCore = "3.5.1"
 glance = "1.0.0"
