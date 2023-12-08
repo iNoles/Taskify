@@ -34,6 +34,3 @@ junit = { module = "junit:junit", version.ref = "junit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinAndroid" }
 reimagined-material3 = { module = "dev.olshevski.navigation:reimagined-material3", version.ref = "reimaginedMaterial3" }
-
-[plugins]
-
