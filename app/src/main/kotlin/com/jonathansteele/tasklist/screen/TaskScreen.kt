@@ -39,26 +39,31 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskListScreen(navController: NavController<Screen>, databaseHelper: DatabaseHelper) {
+fun TaskListScreen(
+    navController: NavController<Screen>,
+    databaseHelper: DatabaseHelper,
+) {
     Scaffold(
         topBar = { CenterAlignedTopAppBar(title = { Text(text = "Task List") }) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
                     navController.navigate(Screen.Add)
-                })
-            {
+                },
+            ) {
                 Text("Create")
             }
         },
     ) {
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(it)
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .background(color = MaterialTheme.colorScheme.surfaceVariant),
         ) {
             GetListTitleFromDatabase(
-                database = databaseHelper
+                database = databaseHelper,
             )
         }
     }
@@ -66,12 +71,11 @@ fun TaskListScreen(navController: NavController<Screen>, databaseHelper: Databas
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GetListTitleFromDatabase(
-    database: DatabaseHelper,
-) {
-    val pagerState = rememberPagerState {
-        database.getAllPages().size
-    }
+fun GetListTitleFromDatabase(database: DatabaseHelper) {
+    val pagerState =
+        rememberPagerState {
+            database.getAllPages().size
+        }
     val coroutineScope = rememberCoroutineScope()
     val pages = database.getAllPages()
     TabRow(
@@ -91,14 +95,15 @@ fun GetListTitleFromDatabase(
     }
 
     HorizontalPager(state = pagerState) { page ->
-        val content = remember {
-            database.getAllTasksBySpecificPageId(page)
-        }
+        val content =
+            remember {
+                database.getAllTasksBySpecificPageId(page)
+            }
         val pager = content.collectAsState(initial = emptyList()).value
         ListPagerContent(
             database = database,
             pager = pager,
-            coroutineScope = coroutineScope
+            coroutineScope = coroutineScope,
         )
     }
 }
@@ -108,7 +113,7 @@ fun ListPagerContent(
     pager: List<Task>,
     coroutineScope: CoroutineScope,
     database: DatabaseHelper,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn {
         items(pager) { task ->
@@ -119,14 +124,16 @@ fun ListPagerContent(
                             checked = task.completedDate.toLong() > 0,
                             onCheckedChange = {
                                 coroutineScope.launch {
-                                    val date = if (it) {
-                                        System.currentTimeMillis().toString()
-                                    } else {
-                                        "0"
-                                    }
+                                    val date =
+                                        if (it) {
+                                            System.currentTimeMillis().toString()
+                                        } else {
+                                            "0"
+                                        }
                                     database.insertTask(task, date)
                                 }
-                            })
+                            },
+                        )
                     },
                     headlineContent = { Text(text = task.name) },
                     supportingContent = { Text(text = task.notes) },
@@ -138,7 +145,7 @@ fun ListPagerContent(
                         }) {
                             Icon(Icons.Filled.Delete, "Delete")
                         }
-                    }
+                    },
                 )
             }
         }

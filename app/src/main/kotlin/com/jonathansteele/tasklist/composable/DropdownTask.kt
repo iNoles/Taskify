@@ -25,23 +25,29 @@ import com.jonathansteele.TaskList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TaskDropDown(pages: List<TaskList>, selectedOptionText: MutableState<TaskList>) {
+fun TaskDropDown(
+    pages: List<TaskList>,
+    selectedOptionText: MutableState<TaskList>,
+) {
     var expanded by remember { mutableStateOf(false) }
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
     ) {
         Text(
             text = "Enter task types",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(6.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
         )
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color.White, shape = RoundedCornerShape(10.dp))
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
         ) {
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -55,17 +61,17 @@ fun TaskDropDown(pages: List<TaskList>, selectedOptionText: MutableState<TaskLis
                     onValueChange = { },
                     trailingIcon = {
                         ExposedDropdownMenuDefaults.TrailingIcon(
-                            expanded = expanded
+                            expanded = expanded,
                         )
                     },
                     modifier = Modifier.menuAnchor(),
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
                 )
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = {
                         expanded = false
-                    }
+                    },
                 ) {
                     pages.forEach { selectionOption ->
                         DropdownMenuItem(
@@ -73,7 +79,7 @@ fun TaskDropDown(pages: List<TaskList>, selectedOptionText: MutableState<TaskLis
                             onClick = {
                                 selectedOptionText.value = selectionOption
                                 expanded = false
-                            }
+                            },
                         )
                     }
                 }

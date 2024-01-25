@@ -16,16 +16,21 @@ import kotlinx.coroutines.withContext
  */
 class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
     private val database = Database(androidSqliteDriver)
-    fun getAllPages(): List<TaskList> =
-        database.listQueries.selectAllTasks().executeAsList()
+
+    fun getAllPages(): List<TaskList> = database.listQueries.selectAllTasks().executeAsList()
 
     fun getAllTasksBySpecificPageId(page: Int): Flow<List<Task>> =
         database.taskQueries.getAllTasksByListId(page.toLong()).asFlow().mapToList(Dispatchers.IO)
 
-    fun getTopTaskNames(): List<String> =
-        database.taskQueries.GetTop3TasksName().executeAsList()
+    fun getTopTaskNames(): List<String> = database.taskQueries.GetTop3TasksName().executeAsList()
 
-    suspend fun insertTask(name: String, notes: String, listId: Long, id: Long? = null, hidden: Long) {
+    suspend fun insertTask(
+        name: String,
+        notes: String,
+        listId: Long,
+        id: Long? = null,
+        hidden: Long,
+    ) {
         withContext(Dispatchers.IO) {
             database.taskQueries.insertTask(
                 id = id,
@@ -33,12 +38,15 @@ class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
                 name = name,
                 notes = notes,
                 completedDate = "0",
-                hidden = hidden
+                hidden = hidden,
             )
         }
     }
 
-    suspend fun insertTask(task: Task, completedDate: String) {
+    suspend fun insertTask(
+        task: Task,
+        completedDate: String,
+    ) {
         withContext(Dispatchers.IO) {
             database.taskQueries.insertTask(
                 id = task.id,
@@ -46,7 +54,7 @@ class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
                 name = task.name,
                 notes = task.notes,
                 completedDate = completedDate,
-                hidden = task.hidden
+                hidden = task.hidden,
             )
         }
     }

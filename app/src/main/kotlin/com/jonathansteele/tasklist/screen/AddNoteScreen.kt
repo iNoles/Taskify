@@ -33,7 +33,11 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddNoteScreen(database: DatabaseHelper, task: Task? = null, goBack: () -> Unit) {
+fun AddNoteScreen(
+    database: DatabaseHelper,
+    task: Task? = null,
+    goBack: () -> Unit,
+) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -50,7 +54,7 @@ fun EventInputs(
     paddingValues: PaddingValues,
     database: DatabaseHelper,
     task: Task? = null,
-    goBack: () -> Unit
+    goBack: () -> Unit,
 ) {
     val pages = database.getAllPages()
     val notes = remember { mutableStateOf("") }
@@ -64,10 +68,11 @@ fun EventInputs(
         selectedOptionText.value = pages[it.listId.toInt()]
     }
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .padding(paddingValues)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                .padding(paddingValues),
     ) {
         TaskNameInput(names = names)
         TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
@@ -118,15 +123,16 @@ fun SaveButton(
                     name = names.value,
                     notes = notes.value,
                     listId = selectedOptionText.value.id,
-                    hidden = if (hiddenState.value) 1L else 0L
+                    hidden = if (hiddenState.value) 1L else 0L,
                 )
                 goBack()
             }
         },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        shape = RoundedCornerShape(6.dp)
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
+        shape = RoundedCornerShape(6.dp),
     ) {
         Text(
             text = "Save Note",

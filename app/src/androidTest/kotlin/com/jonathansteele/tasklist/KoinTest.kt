@@ -11,7 +11,7 @@ import org.koin.test.check.checkModules
 
 @RunWith(AndroidJUnit4::class)
 @Category(CheckModuleTest::class)
-class KoinTest  {
+class KoinTest {
     @Test
     fun checkAllModules() {
         startKoin {

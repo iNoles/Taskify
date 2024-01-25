@@ -19,8 +19,10 @@ import com.jonathansteele.tasklist.DatabaseHelper
 import com.jonathansteele.tasklist.R
 
 class Top3AppWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-
+    override suspend fun provideGlance(
+        context: Context,
+        id: GlanceId,
+    ) {
         // In this method, load data needed to render the AppWidget.
         // Use `withContext` to switch to another thread for long running
         // operations.
@@ -28,10 +30,11 @@ class Top3AppWidget : GlanceAppWidget() {
         val tasks = databaseHelper.getTopTaskNames()
         provideContent {
             GlanceTheme(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                     GlanceTheme.colors
-                else
+                } else {
                     MyAppWidgetGlanceColorScheme.colors
+                },
             ) {
                 LazyColumn(modifier = GlanceModifier.background(GlanceTheme.colors.surfaceVariant)) {
                     item {
@@ -40,7 +43,7 @@ class Top3AppWidget : GlanceAppWidget() {
                     items(tasks) {
                         Text(
                             text = it,
-                            modifier = GlanceModifier.fillMaxWidth()
+                            modifier = GlanceModifier.fillMaxWidth(),
                         )
                     }
                 }

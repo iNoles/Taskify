@@ -6,19 +6,22 @@ import com.jonathansteele.tasklist.DatabaseHelper
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val sqliteDriverModule = module {
-    single {
-        AndroidSqliteDriver(Database.Schema, androidContext(), "notes.db")
+val sqliteDriverModule =
+    module {
+        single {
+            AndroidSqliteDriver(Database.Schema, androidContext(), "notes.db")
+        }
     }
-}
 
-val dataModule = module {
-    single {
-        DatabaseHelper(get())
+val dataModule =
+    module {
+        single {
+            DatabaseHelper(get())
+        }
     }
-}
 
-val appModules = listOf(
-    sqliteDriverModule,
-    dataModule
-)
+val appModules =
+    listOf(
+        sqliteDriverModule,
+        dataModule,
+    )
