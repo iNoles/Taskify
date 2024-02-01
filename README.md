@@ -1,4 +1,4 @@
-### TaskList Android App [Work in progress 🚧]
+# TaskList Android App [Work in progress 🚧]
 
 TaskList is a fully functional Android app built entirely with Kotlin and Jetpack Compose
 with SQLDelight.
