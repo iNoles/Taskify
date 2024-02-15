@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Super-linter
-        uses: super-linter/super-linter@ff5037c06042e564803502feb97f8a686f3b0171 # v6.0.0
+        uses: super-linter/super-linter@f5150a3ce82fe45ad2d9f1e92ac6fc2c9b7c14a5 # v6.1.1
         env:
           DEFAULT_BRANCH: main
           VALIDATE_SHELL_SHFMT: false
