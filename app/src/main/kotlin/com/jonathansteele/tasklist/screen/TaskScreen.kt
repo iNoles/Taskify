@@ -35,7 +35,8 @@ import com.jonathansteele.tasklist.DatabaseHelper
 import com.jonathansteele.tasklist.navigation.Screen
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navigate
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -102,19 +103,33 @@ fun GetListTitleFromDatabase(database: DatabaseHelper) {
             }
         val pager = content.collectAsState(initial = emptyList()).value
         ListPagerContent(
-            database = database,
-            pager = pager,
-            coroutineScope = coroutineScope,
+            pager = pager.toImmutableList(),
+            onCheckedChange = { boolean, task ->
+                coroutineScope.launch {
+                    val date =
+                        if (boolean) {
+                            System.currentTimeMillis().toString()
+                        } else {
+                            "0"
+                        }
+                    database.insertTask(task, date)
+                }
+            },
+            deleteChange = {
+                coroutineScope.launch {
+                    database.deleteTask(it)
+                }
+            }
         )
     }
 }
 
 @Composable
 fun ListPagerContent(
-    pager: List<Task>,
-    coroutineScope: CoroutineScope,
-    database: DatabaseHelper,
+    pager: ImmutableList<Task>,
     modifier: Modifier = Modifier,
+    onCheckedChange: (Boolean, Task) -> Unit,
+    deleteChange: (Long) -> Unit,
 ) {
     LazyColumn {
         items(pager) { task ->
@@ -124,26 +139,14 @@ fun ListPagerContent(
                         Checkbox(
                             checked = task.completedDate.toLong() > 0,
                             onCheckedChange = {
-                                coroutineScope.launch {
-                                    val date =
-                                        if (it) {
-                                            System.currentTimeMillis().toString()
-                                        } else {
-                                            "0"
-                                        }
-                                    database.insertTask(task, date)
-                                }
+                                onCheckedChange(it, task)
                             },
                         )
                     },
                     headlineContent = { Text(text = task.name) },
                     supportingContent = { Text(text = task.notes) },
                     trailingContent = {
-                        IconButton(onClick = {
-                            coroutineScope.launch {
-                                database.deleteTask(task.id)
-                            }
-                        }) {
+                        IconButton(onClick = { deleteChange(task.id) }) {
                             Icon(Icons.Filled.Delete, "Delete")
                         }
                     },

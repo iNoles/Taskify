@@ -72,6 +72,7 @@ dependencies {
     implementation(libs.coroutines.extensions)
     implementation(libs.reimagined.material3)
     implementation(libs.koin.android)
+    implementation(libs.kotlinx.collections.immutable)
 
     // For Glance support
     implementation(libs.androidx.glance)
