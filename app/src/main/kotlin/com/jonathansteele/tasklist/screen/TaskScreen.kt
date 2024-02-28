@@ -119,7 +119,7 @@ fun GetListTitleFromDatabase(database: DatabaseHelper) {
                 coroutineScope.launch {
                     database.deleteTask(it)
                 }
-            }
+            },
         )
     }
 }

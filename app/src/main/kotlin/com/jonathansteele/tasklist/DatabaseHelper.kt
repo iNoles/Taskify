@@ -19,18 +19,20 @@ import kotlinx.coroutines.withContext
 class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
     private val database = Database(androidSqliteDriver)
 
-    fun getAllPages(): ImmutableList<TaskList> = database.listQueries
-        .selectAllTasks()
-        .executeAsList()
-        .toImmutableList()
+    fun getAllPages(): ImmutableList<TaskList> =
+        database.listQueries
+            .selectAllTasks()
+            .executeAsList()
+            .toImmutableList()
 
     fun getAllTasksBySpecificPageId(page: Int): Flow<List<Task>> =
         database.taskQueries.getAllTasksByListId(page.toLong()).asFlow().mapToList(Dispatchers.IO)
 
-    fun getTopTaskNames() = database.taskQueries
-        .GetTop3TasksName()
-        .executeAsList()
-        .toImmutableList()
+    fun getTopTaskNames() =
+        database.taskQueries
+            .GetTop3TasksName()
+            .executeAsList()
+            .toImmutableList()
 
     suspend fun insertTask(
         name: String,
