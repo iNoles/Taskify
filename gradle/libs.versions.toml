@@ -1,5 +1,5 @@
 [versions]
-androidxComposeBom = "2024.02.01"
+androidxComposeBom = "2024.02.02"
 activityCompose = "1.8.2"
 androidDriver = "2.0.1"
 coreKtx = "1.12.0"
