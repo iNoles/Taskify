@@ -15,35 +15,35 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun TaskNameInput(names: MutableState<String>) {
+fun TaskField(field: MutableState<String>, fieldName: String) {
     Column(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
     ) {
         Text(
-            text = "Enter task name",
+            text = fieldName,
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(6.dp),
         )
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
+            Modifier
+                .fillMaxWidth()
+                .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
         ) {
             BasicTextField(
                 modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 onValueChange = {
-                    names.value = it
+                    field.value = it
                 },
-                value = names.value,
+                value = field.value,
             )
         }
     }

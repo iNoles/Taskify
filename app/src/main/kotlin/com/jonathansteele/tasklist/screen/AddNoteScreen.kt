@@ -24,9 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.jonathansteele.Task
 import com.jonathansteele.TaskList
 import com.jonathansteele.tasklist.DatabaseHelper
-import com.jonathansteele.tasklist.composable.TaskDescriptionInput
 import com.jonathansteele.tasklist.composable.TaskDropDown
-import com.jonathansteele.tasklist.composable.TaskNameInput
+import com.jonathansteele.tasklist.composable.TaskField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -74,9 +73,9 @@ fun EventInputs(
                 .background(color = MaterialTheme.colorScheme.surfaceVariant)
                 .padding(paddingValues),
     ) {
-        TaskNameInput(names = names)
+        TaskField(field = names, "Enter task name")
         TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
-        TaskDescriptionInput(notes = notes)
+        TaskField(field = notes, "Enter Task notes")
         TaskHiddenCheckBox(hiddenState = hiddenState)
         SaveButton(database, goBack, notes, names, hiddenState, selectedOptionText, task?.id)
     }
