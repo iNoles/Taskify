@@ -22,33 +22,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jonathansteele.TaskList
-import kotlinx.collections.immutable.ImmutableList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskDropDown(
-    pages: ImmutableList<TaskList>,
+    pages: List<TaskList>,
     selectedOptionText: MutableState<TaskList>,
 ) {
     var expanded by remember { mutableStateOf(false) }
     Column(
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
     ) {
         Text(
             text = "Enter task types",
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(6.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(6.dp),
         )
         Box(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
+            Modifier
+                .fillMaxWidth()
+                .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
         ) {
             ExposedDropdownMenuBox(
                 expanded = expanded,

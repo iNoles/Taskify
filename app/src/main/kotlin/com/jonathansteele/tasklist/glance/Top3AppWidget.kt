@@ -26,7 +26,8 @@ class Top3AppWidget : GlanceAppWidget() {
         // In this method, load data needed to render the AppWidget.
         // Use `withContext` to switch to another thread for long running
         // operations.
-        val databaseHelper = DatabaseHelper(AndroidSqliteDriver(Database.Schema, context, "notes.db"))
+        val databaseHelper =
+            DatabaseHelper(AndroidSqliteDriver(Database.Schema, context, "notes.db"))
         val tasks = databaseHelper.getTopTaskNames()
         provideContent {
             GlanceTheme(

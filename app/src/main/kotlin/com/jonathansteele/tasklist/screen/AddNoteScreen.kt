@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import com.jonathansteele.Task
 import com.jonathansteele.TaskList
 import com.jonathansteele.tasklist.DatabaseHelper
+import com.jonathansteele.tasklist.Priority
+import com.jonathansteele.tasklist.composable.PriorityDropdown
 import com.jonathansteele.tasklist.composable.TaskDropDown
 import com.jonathansteele.tasklist.composable.TaskField
 import kotlinx.coroutines.CoroutineScope
@@ -60,24 +62,33 @@ fun EventInputs(
     val names = remember { mutableStateOf("") }
     val hiddenState = remember { mutableStateOf(false) }
     val selectedOptionText = remember { mutableStateOf(pages[0]) }
+    val priority = remember { mutableStateOf(Priority.LOW) }
+
     task?.let {
         notes.value = it.notes
         names.value = it.name
         hiddenState.value = it.hidden == 1L
         selectedOptionText.value = pages[it.listId.toInt()]
+        priority.value = Priority.valueOf(it.priority)
     }
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.surfaceVariant)
-                .padding(paddingValues),
+        Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+            .padding(paddingValues),
     ) {
         TaskField(field = names, "Enter task name")
         TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
         TaskField(field = notes, "Enter Task notes")
         TaskHiddenCheckBox(hiddenState = hiddenState)
-        SaveButton(database, goBack, notes, names, hiddenState, selectedOptionText, task?.id)
+        PriorityDropdown(priority = priority)
+        SaveButton(
+            database, goBack,
+            notes, names,
+            hiddenState, selectedOptionText,
+            priority, task?.id
+        )
     }
 }
 
@@ -111,6 +122,7 @@ fun SaveButton(
     names: MutableState<String>,
     hiddenState: MutableState<Boolean>,
     selectedOptionText: MutableState<TaskList>,
+    priority: MutableState<Priority>,
     id: Long? = null,
 ) {
     FilledTonalButton(
@@ -122,15 +134,16 @@ fun SaveButton(
                     name = names.value,
                     notes = notes.value,
                     listId = selectedOptionText.value.id,
+                    priority = priority.value,
                     hidden = if (hiddenState.value) 1L else 0L,
                 )
                 goBack()
             }
         },
         modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
+        Modifier
+            .fillMaxWidth()
+            .padding(10.dp),
         shape = RoundedCornerShape(6.dp),
     ) {
         Text(

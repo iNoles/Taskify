@@ -26,7 +26,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -70,7 +73,6 @@ dependencies {
     implementation(libs.coroutines.extensions)
     implementation(libs.reimagined.material3)
     implementation(libs.koin.android)
-    implementation(libs.kotlinx.collections.immutable)
 
     // For Glance support
     implementation(libs.androidx.glance)

@@ -27,8 +27,20 @@ class DatabaseTest {
                 numItemsBeforeInsertion = it.size
             }
 
-            helper.insertTask(name = "Test", notes = "This is test", listId = 0L, hidden = 0L)
-            helper.insertTask(name = "Interview", notes = "Preparing for Interview", listId = 0L, hidden = 0L)
+            helper.insertTask(
+                name = "Test",
+                notes = "This is test",
+                listId = 0L,
+                priority = Priority.LOW,
+                hidden = 0L
+            )
+            helper.insertTask(
+                name = "Interview",
+                notes = "Preparing for Interview",
+                listId = 0L,
+                priority = Priority.HIGH,
+                hidden = 0L
+            )
 
             var numItemsAfterInsertion = -1
             helper.getAllTasksBySpecificPageId(0).collect {

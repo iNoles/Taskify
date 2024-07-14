@@ -3,21 +3,28 @@ CREATE TABLE Task (
   listId INTEGER NOT NULL,
   name TEXT NOT NULL,
   notes TEXT NOT NULL,
+  priority TEXT NOT NULL DEFAULT "LOW",
   completedDate TEXT NOT NULL DEFAULT "0",
   hidden INTEGER NOT NULL
 );
 
 getAllTasksByListId:
 SELECT *
-FROM Task WHERE listId = :listId AND hidden = 0;
+FROM Task
+WHERE listId = :listId AND hidden = 0
+ORDER BY CASE priority
+            WHEN 'HIGH' THEN 1
+            WHEN 'MEDIUM' THEN 2
+            ELSE 3
+         END ASC;
 
 GetTop3TasksName:
 SELECT name
-FROM Task WHERE completedDate = '0' ORDER BY completedDate DESC LIMIT 3;
+FROM Task WHERE completedDate = '0' ORDER BY completedDate AND priority DESC LIMIT 3;
 
 insertTask:
-INSERT OR REPLACE INTO Task(id, listId, name, notes, completedDate, hidden)
-VALUES (?,?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO Task(id, listId, name, notes, priority, completedDate, hidden)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
 deleteTaskById:
 DELETE FROM Task WHERE id = :id;

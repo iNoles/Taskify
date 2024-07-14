@@ -35,8 +35,6 @@ import com.jonathansteele.tasklist.DatabaseHelper
 import com.jonathansteele.tasklist.navigation.Screen
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navigate
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +44,11 @@ fun TaskListScreen(
     databaseHelper: DatabaseHelper,
 ) {
     Scaffold(
-        topBar = { CenterAlignedTopAppBar(title = { Text(text = "Task List") }) },
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = { Text(text = "Task List") },
+            )
+        },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = {
@@ -59,10 +61,10 @@ fun TaskListScreen(
     ) {
         Column(
             modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .background(color = MaterialTheme.colorScheme.surfaceVariant),
+            Modifier
+                .fillMaxSize()
+                .padding(it)
+                .background(color = MaterialTheme.colorScheme.surfaceVariant),
         ) {
             GetListTitleFromDatabase(
                 database = databaseHelper,
@@ -80,6 +82,7 @@ fun GetListTitleFromDatabase(database: DatabaseHelper) {
         }
     val coroutineScope = rememberCoroutineScope()
     val pages = database.getAllPages()
+
     TabRow(
         // Our selected tab is our current page
         selectedTabIndex = pagerState.currentPage,
@@ -103,7 +106,7 @@ fun GetListTitleFromDatabase(database: DatabaseHelper) {
             }
         val pager = content.collectAsState(initial = emptyList()).value
         ListPagerContent(
-            pager = pager.toImmutableList(),
+            pager = pager,
             onCheckedChange = { boolean, task ->
                 coroutineScope.launch {
                     val date =
@@ -126,7 +129,7 @@ fun GetListTitleFromDatabase(database: DatabaseHelper) {
 
 @Composable
 fun ListPagerContent(
-    pager: ImmutableList<Task>,
+    pager: List<Task>,
     modifier: Modifier = Modifier,
     onCheckedChange: (Boolean, Task) -> Unit,
     deleteChange: (Long) -> Unit,

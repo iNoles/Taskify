@@ -5,11 +5,7 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.jonathansteele.Database
 import com.jonathansteele.Task
-import com.jonathansteele.TaskList
-import kotlinx.collections.immutable.ImmutableList
-import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 /**
@@ -19,25 +15,25 @@ import kotlinx.coroutines.withContext
 class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
     private val database = Database(androidSqliteDriver)
 
-    fun getAllPages(): ImmutableList<TaskList> =
+    fun getAllPages() =
         database.listQueries
             .selectAllTasks()
             .executeAsList()
-            .toImmutableList()
 
-    fun getAllTasksBySpecificPageId(page: Int): Flow<List<Task>> =
-        database.taskQueries.getAllTasksByListId(page.toLong()).asFlow().mapToList(Dispatchers.IO)
+    fun getAllTasksBySpecificPageId(page: Int) =
+        database.taskQueries.getAllTasksByListId(page.toLong()).asFlow()
+            .mapToList(Dispatchers.IO)
 
     fun getTopTaskNames() =
         database.taskQueries
             .GetTop3TasksName()
             .executeAsList()
-            .toImmutableList()
 
     suspend fun insertTask(
         name: String,
         notes: String,
         listId: Long,
+        priority: Priority,
         id: Long? = null,
         hidden: Long,
     ) {
@@ -48,6 +44,7 @@ class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
                 name = name,
                 notes = notes,
                 completedDate = "0",
+                priority = priority.name,
                 hidden = hidden,
             )
         }
@@ -64,6 +61,7 @@ class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
                 name = task.name,
                 notes = task.notes,
                 completedDate = completedDate,
+                priority = task.priority,
                 hidden = task.hidden,
             )
         }
