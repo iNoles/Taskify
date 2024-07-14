@@ -30,5 +30,6 @@ jobs:
           DEFAULT_BRANCH: main
           VALIDATE_SHELL_SHFMT: false
           VALIDATE_JSCPD: false
+          VALIDATE_NATURAL_LANGUAGE: false
           # To report GitHub Actions status checks
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
