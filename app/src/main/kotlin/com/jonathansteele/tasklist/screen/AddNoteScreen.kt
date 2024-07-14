@@ -73,10 +73,10 @@ fun EventInputs(
     }
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .padding(paddingValues),
+            Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                .padding(paddingValues),
     ) {
         TaskField(field = names, "Enter task name")
         TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
@@ -84,10 +84,14 @@ fun EventInputs(
         TaskHiddenCheckBox(hiddenState = hiddenState)
         PriorityDropdown(priority = priority)
         SaveButton(
-            database, goBack,
-            notes, names,
-            hiddenState, selectedOptionText,
-            priority, task?.id
+            database,
+            goBack,
+            notes,
+            names,
+            hiddenState,
+            selectedOptionText,
+            priority,
+            task?.id,
         )
     }
 }
@@ -141,9 +145,9 @@ fun SaveButton(
             }
         },
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
         shape = RoundedCornerShape(6.dp),
     ) {
         Text(

@@ -21,28 +21,28 @@ fun TaskField(
 ) {
     Column(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
     ) {
         Text(
             text = fieldName,
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
         )
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
+                Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
         ) {
             BasicTextField(
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
                 onValueChange = {
                     field.value = it
                 },

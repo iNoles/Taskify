@@ -14,19 +14,19 @@ fun PriorityDropdown(priority: MutableState<Priority>) {
     DropdownMenu(
         expanded = true,
         onDismissRequest = { /*TODO*/ },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         DropdownMenuItem(
             onClick = { priority.value = Priority.HIGH },
-            text = { Text("High") }
+            text = { Text("High") },
         )
         DropdownMenuItem(
             onClick = { priority.value = Priority.MEDIUM },
-            text = { Text("Medium") }
+            text = { Text("Medium") },
         )
         DropdownMenuItem(
             onClick = { priority.value = Priority.LOW },
-            text = { Text("Low") }
+            text = { Text("Low") },
         )
     }
 }

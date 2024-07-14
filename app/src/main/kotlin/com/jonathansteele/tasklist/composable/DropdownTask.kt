@@ -32,22 +32,22 @@ fun TaskDropDown(
     var expanded by remember { mutableStateOf(false) }
     Column(
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(10.dp),
     ) {
         Text(
             text = "Enter task types",
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(6.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
         )
         Box(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
+                Modifier
+                    .fillMaxWidth()
+                    .background(color = Color.White, shape = RoundedCornerShape(10.dp)),
         ) {
             ExposedDropdownMenuBox(
                 expanded = expanded,

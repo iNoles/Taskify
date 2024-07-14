@@ -61,10 +61,10 @@ fun TaskListScreen(
     ) {
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(color = MaterialTheme.colorScheme.surfaceVariant),
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .background(color = MaterialTheme.colorScheme.surfaceVariant),
         ) {
             GetListTitleFromDatabase(
                 database = databaseHelper,
