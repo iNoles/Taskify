@@ -1,33 +1,38 @@
 package com.jonathansteele.tasklist.screen
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathansteele.Task
 import com.jonathansteele.TaskList
 import com.jonathansteele.tasklist.DatabaseHelper
 import com.jonathansteele.tasklist.Priority
-import com.jonathansteele.tasklist.composable.PriorityDropdown
+import com.jonathansteele.tasklist.composable.PriorityChips
 import com.jonathansteele.tasklist.composable.TaskDropDown
-import com.jonathansteele.tasklist.composable.TaskField
+import com.jonathansteele.tasklist.theme.TaskListTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -71,88 +76,141 @@ fun EventInputs(
         selectedOptionText.value = pages[it.listId.toInt()]
         priority.value = Priority.valueOf(it.priority)
     }
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .background(color = MaterialTheme.colorScheme.surfaceVariant)
-                .padding(paddingValues),
+
+    FormDisplay(
+        paddingValues,
+        names = names,
+        pages = pages,
+        selectedOptionText = selectedOptionText,
+        notes = notes,
+        priority = priority,
+        hiddenState = hiddenState
     ) {
-        TaskField(field = names, "Enter task name")
-        TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
-        TaskField(field = notes, "Enter Task notes")
-        TaskHiddenCheckBox(hiddenState = hiddenState)
-        PriorityDropdown(priority = priority)
-        SaveButton(
-            database,
-            goBack,
-            notes,
-            names,
-            hiddenState,
-            selectedOptionText,
-            priority,
-            task?.id,
-        )
+        val scope = CoroutineScope(Dispatchers.Main)
+        scope.launch {
+            database.insertTask(
+                id = task?.id,
+                name = names.value,
+                notes = notes.value,
+                listId = selectedOptionText.value.id,
+                priority = priority.value,
+                hidden = if (hiddenState.value) 1L else 0L,
+            )
+            goBack()
+        }
     }
 }
 
 @Composable
-fun TaskHiddenCheckBox(hiddenState: MutableState<Boolean>) {
-    // in below line we are displaying a row
-    // and we are creating a checkbox in a row.
-    Row {
-        Checkbox(
-            // below line we are setting
-            // the state of checkbox.
-            checked = hiddenState.value,
-            // below line is use to add padding
-            // to our checkbox.
-            modifier = Modifier.padding(16.dp),
-            // below line is use to add on check
-            // change to our checkbox.
-            onCheckedChange = { hiddenState.value = it },
-        )
-        // below line is use to add text to our check box and we are
-        // adding padding to our text of checkbox
-        Text(text = "Task Hidden Enabled", modifier = Modifier.padding(16.dp))
-    }
-}
-
-@Composable
-fun SaveButton(
-    database: DatabaseHelper,
-    goBack: () -> Unit,
-    notes: MutableState<String>,
+fun FormDisplay(
+    paddingValues: PaddingValues,
     names: MutableState<String>,
-    hiddenState: MutableState<Boolean>,
+    pages: List<TaskList>,
     selectedOptionText: MutableState<TaskList>,
+    notes: MutableState<String>,
     priority: MutableState<Priority>,
-    id: Long? = null,
+    hiddenState: MutableState<Boolean>,
+    buttonClick: () -> Unit
 ) {
-    FilledTonalButton(
-        onClick = {
-            val scope = CoroutineScope(Dispatchers.Main)
-            scope.launch {
-                database.insertTask(
-                    id = id,
-                    name = names.value,
-                    notes = notes.value,
-                    listId = selectedOptionText.value.id,
-                    priority = priority.value,
-                    hidden = if (hiddenState.value) 1L else 0L,
-                )
-                goBack()
-            }
-        },
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-        shape = RoundedCornerShape(6.dp),
+    Column(
+        modifier = Modifier
+            .padding(paddingValues)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Save Note",
-            modifier = Modifier.padding(6.dp),
+            text = "Enter Task Name",
+            style = MaterialTheme.typography.bodyLarge
         )
+
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = names.value,
+            onValueChange = { names.value = it },
+            placeholder = { Text(text = "e.g. any name you want") },
+            singleLine = true,
+            isError = names.value.isEmpty()
+        )
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        Text(
+            text = "Enter Task Notes",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        TextField(
+            modifier = Modifier.fillMaxWidth(),
+            value = notes.value,
+            onValueChange = { notes.value = it },
+            placeholder = { Text(text = "e.g. any notes you want") },
+            isError = notes.value.isEmpty()
+        )
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        Text(
+            text = "Enter Priority Level",
+            style = MaterialTheme.typography.bodyLarge
+        )
+
+        PriorityChips(priority)
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
+        Row {
+            Checkbox(
+                checked = hiddenState.value,
+                onCheckedChange = { hiddenState.value = it },
+            )
+            Text(text = "Task Hidden Enabled", modifier = Modifier.padding(16.dp))
+        }
+
+        Spacer(modifier = Modifier.padding(8.dp))
+
+        Button(
+            onClick = {
+                buttonClick()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .align(Alignment.CenterHorizontally),
+            shape = MaterialTheme.shapes.extraLarge
+        ) {
+            Text(
+                text = "Save Note",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun AddNoteScreenPreview() {
+    TaskListTheme {
+        val names = remember { mutableStateOf("") }
+        val pages = listOf(
+            TaskList(0, "Personal"),
+            TaskList(1, "Business")
+        )
+        val selectedOptionText = remember { mutableStateOf(pages[0]) }
+        val notes = remember { mutableStateOf("") }
+        val priority = remember { mutableStateOf(Priority.LOW) }
+        val hiddenState = remember { mutableStateOf(false) }
+        FormDisplay(
+            PaddingValues(16.dp, 16.dp),
+            names,
+            pages,
+            selectedOptionText,
+            notes,
+            priority,
+            hiddenState
+        ) {}
     }
 }
