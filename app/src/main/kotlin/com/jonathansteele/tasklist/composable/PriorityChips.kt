@@ -18,7 +18,7 @@ import com.jonathansteele.tasklist.Priority
 @Composable
 fun PriorityChips(priority: MutableState<Priority>) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         FilterChip(
             onClick = { priority.value = Priority.LOW },
@@ -31,7 +31,7 @@ fun PriorityChips(priority: MutableState<Priority>) {
                     Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = "Done icon",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
                     )
                 }
             } else {
@@ -69,7 +69,7 @@ fun PriorityChips(priority: MutableState<Priority>) {
                     Icon(
                         imageVector = Icons.Filled.Done,
                         contentDescription = "Done icon",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
+                        modifier = Modifier.size(FilterChipDefaults.IconSize),
                     )
                 }
             } else {
@@ -78,4 +78,3 @@ fun PriorityChips(priority: MutableState<Priority>) {
         )
     }
 }
-
