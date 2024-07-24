@@ -20,11 +20,11 @@ import com.jonathansteele.TaskList
 @Composable
 fun TaskDropDown(
     pages: List<TaskList>,
-    selectedOptionText: MutableState<TaskList>
+    selectedOptionText: MutableState<TaskList>,
 ) {
     Text(
         text = "Enter task types",
-        style = MaterialTheme.typography.bodyLarge
+        style = MaterialTheme.typography.bodyLarge,
     )
 
     var expanded by remember { mutableStateOf(false) }
@@ -50,7 +50,7 @@ fun TaskDropDown(
                     onClick = {
                         selectedOptionText.value = selectionOption
                         expanded = false
-                    }
+                    },
                 )
             }
         }
