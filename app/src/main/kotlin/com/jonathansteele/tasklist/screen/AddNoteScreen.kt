@@ -84,7 +84,7 @@ fun EventInputs(
         selectedOptionText = selectedOptionText,
         notes = notes,
         priority = priority,
-        hiddenState = hiddenState
+        hiddenState = hiddenState,
     ) {
         val scope = CoroutineScope(Dispatchers.Main)
         scope.launch {
@@ -110,17 +110,18 @@ fun FormDisplay(
     notes: MutableState<String>,
     priority: MutableState<Priority>,
     hiddenState: MutableState<Boolean>,
-    buttonClick: () -> Unit
+    buttonClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .padding(paddingValues)
-            .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier =
+            Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
             text = "Enter Task Name",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         TextField(
@@ -129,7 +130,7 @@ fun FormDisplay(
             onValueChange = { names.value = it },
             placeholder = { Text(text = "e.g. any name you want") },
             singleLine = true,
-            isError = names.value.isEmpty()
+            isError = names.value.isEmpty(),
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
@@ -140,7 +141,7 @@ fun FormDisplay(
 
         Text(
             text = "Enter Task Notes",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         TextField(
@@ -148,14 +149,14 @@ fun FormDisplay(
             value = notes.value,
             onValueChange = { notes.value = it },
             placeholder = { Text(text = "e.g. any notes you want") },
-            isError = notes.value.isEmpty()
+            isError = notes.value.isEmpty(),
         )
 
         Spacer(modifier = Modifier.padding(4.dp))
 
         Text(
             text = "Enter Priority Level",
-            style = MaterialTheme.typography.bodyLarge
+            style = MaterialTheme.typography.bodyLarge,
         )
 
         PriorityChips(priority)
@@ -176,15 +177,16 @@ fun FormDisplay(
             onClick = {
                 buttonClick()
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .align(Alignment.CenterHorizontally),
-            shape = MaterialTheme.shapes.extraLarge
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .align(Alignment.CenterHorizontally),
+            shape = MaterialTheme.shapes.extraLarge,
         ) {
             Text(
                 text = "Save Note",
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     }
@@ -195,10 +197,11 @@ fun FormDisplay(
 fun AddNoteScreenPreview() {
     TaskListTheme {
         val names = remember { mutableStateOf("") }
-        val pages = listOf(
-            TaskList(0, "Personal"),
-            TaskList(1, "Business")
-        )
+        val pages =
+            listOf(
+                TaskList(0, "Personal"),
+                TaskList(1, "Business"),
+            )
         val selectedOptionText = remember { mutableStateOf(pages[0]) }
         val notes = remember { mutableStateOf("") }
         val priority = remember { mutableStateOf(Priority.LOW) }
@@ -210,7 +213,7 @@ fun AddNoteScreenPreview() {
             selectedOptionText,
             notes,
             priority,
-            hiddenState
+            hiddenState,
         ) {}
     }
 }

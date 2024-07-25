@@ -26,17 +26,18 @@ fun PriorityChips(priority: MutableState<Priority>) {
                 Text("Low")
             },
             selected = priority.value == Priority.LOW,
-            leadingIcon = if (priority.value == Priority.LOW) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "Done icon",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize),
-                    )
-                }
-            } else {
-                null
-            },
+            leadingIcon =
+                if (priority.value == Priority.LOW) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "Done icon",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
         )
 
         FilterChip(
@@ -45,17 +46,18 @@ fun PriorityChips(priority: MutableState<Priority>) {
                 Text("Medium")
             },
             selected = priority.value == Priority.MEDIUM,
-            leadingIcon = if (priority.value == Priority.MEDIUM) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "Done icon",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize)
-                    )
-                }
-            } else {
-                null
-            },
+            leadingIcon =
+                if (priority.value == Priority.MEDIUM) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "Done icon",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
         )
 
         FilterChip(
@@ -64,17 +66,18 @@ fun PriorityChips(priority: MutableState<Priority>) {
                 Text("Large")
             },
             selected = priority.value == Priority.HIGH,
-            leadingIcon = if (priority.value == Priority.HIGH) {
-                {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = "Done icon",
-                        modifier = Modifier.size(FilterChipDefaults.IconSize),
-                    )
-                }
-            } else {
-                null
-            },
+            leadingIcon =
+                if (priority.value == Priority.HIGH) {
+                    {
+                        Icon(
+                            imageVector = Icons.Filled.Done,
+                            contentDescription = "Done icon",
+                            modifier = Modifier.size(FilterChipDefaults.IconSize),
+                        )
+                    }
+                } else {
+                    null
+                },
         )
     }
 }

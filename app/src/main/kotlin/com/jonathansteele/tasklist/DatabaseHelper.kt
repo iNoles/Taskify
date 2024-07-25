@@ -12,7 +12,9 @@ import kotlinx.coroutines.withContext
  * com.jonathansteele.tasklist.DatabaseHelper
  * This class act like a helper between application and sqldelight
  */
-class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
+class DatabaseHelper(
+    androidSqliteDriver: AndroidSqliteDriver,
+) {
     private val database = Database(androidSqliteDriver)
 
     fun getAllPages() =
@@ -21,7 +23,9 @@ class DatabaseHelper(androidSqliteDriver: AndroidSqliteDriver) {
             .executeAsList()
 
     fun getAllTasksBySpecificPageId(page: Int) =
-        database.taskQueries.getAllTasksByListId(page.toLong()).asFlow()
+        database.taskQueries
+            .getAllTasksByListId(page.toLong())
+            .asFlow()
             .mapToList(Dispatchers.IO)
 
     fun getTopTaskNames() =
