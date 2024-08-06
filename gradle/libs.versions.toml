@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.0.0"
+kotlin = "2.0.10"
 androidxComposeBom = "2024.06.00"
 activityCompose = "1.9.1"
 androidDriver = "2.0.2"
