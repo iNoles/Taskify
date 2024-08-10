@@ -1,8 +1,8 @@
-# TaskList Android App [Work in progress 🚧]
+# Taskify Android App [Work in progress 🚧]
 
-TaskList is an Android application built entirely with Kotlin and Jetpack Compose, utilizing SQLDelight for local-only database management. This app provides a simple and efficient way to manage your tasks.
+Taskify is an Android application built entirely with Kotlin and Jetpack Compose, utilizing SQLDelight for local-only database management. This app provides a simple and efficient way to manage your personal and business tasks.
 
-The app is currently in early stage development and is not yet available on the Play Store.
+The app is currently in early development and unavailable on the Play Store.
 
 ## Features
 
