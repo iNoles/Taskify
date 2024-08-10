@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.jonathansteele.tasklist"
+    namespace = "com.jonathansteele.taskify"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.jonathansteele.tasklist"
+        applicationId = "com.jonathansteele.taskify"
         minSdk = 26
         targetSdk = 35
         versionCode = 1
