@@ -37,18 +37,21 @@ git clone https://github.com/iNoles/TaskList.git
 ```
 
 ### Open the project in Android Studio
+
 - Open Android Studio.
 - Click on File -> Open....
 - Navigate to the directory where you cloned the project and select it.
 - Click on Open.
 
 ### Build and Run
+
 - Ensure you have an Android device connected or an emulator running.
 - Click on the Run button in Android Studio.
 
 ## Contributing
 
 Contributions are what make the open-source community such an amazing place to be, learn, inspire, and create. Any contributions you make are greatly appreciated.
+
 - Fork the project.
 - Create your feature branch (git checkout -b feature/AmazingFeature).
 - Commit your changes (git commit -m 'Add some AmazingFeature').
