@@ -1,6 +1,6 @@
 # Taskify Android App [Work in progress 🚧]
 
-Taskify is an Android application built entirely with Kotlin and Jetpack Compose, utilizing SQLDelight for local-only database management. This app provides a simple and efficient way to manage your personal and business tasks.
+Taskify is an Android application for managing personal and business tasks, built with Kotlin and Jetpack Compose. Utilizing SQLDelight for local-only database management, Taskify provides a sleek and efficient way to stay organized.
 
 The app is currently in early development and unavailable on the Play Store.
 
@@ -15,6 +15,7 @@ The app is currently in early development and unavailable on the Play Store.
 - **Task Prioritization**: Assign priorities to tasks to manage your workflow effectively.
 - **Dark Mode (System)**: Supports system-level dark mode settings for comfortable viewing.
 - **Glance Widgets**: View tasks at a glance with home screen widgets.
+- **Catalogs**: Organize tasks into customizable catalogs (e.g., personal, business).
 
 ## Screenshots
 
