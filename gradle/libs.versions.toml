@@ -1,6 +1,6 @@
 [versions]
 kotlin = "2.0.20"
-androidxComposeBom = "2024.09.00"
+androidxComposeBom = "2024.09.01"
 activityCompose = "1.9.2"
 androidDriver = "2.0.2"
 coreKtx = "1.13.1"
