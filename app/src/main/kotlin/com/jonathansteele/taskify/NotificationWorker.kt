@@ -12,9 +12,10 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
-class NotificationWorker(context: Context, params: WorkerParameters) :
-    Worker(context, params) {
-
+class NotificationWorker(
+    context: Context,
+    params: WorkerParameters,
+) : Worker(context, params) {
     override fun doWork(): Result {
         val taskName = inputData.getString("TASK_NAME") ?: return Result.failure()
 
@@ -28,27 +29,35 @@ class NotificationWorker(context: Context, params: WorkerParameters) :
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notification = NotificationCompat.Builder(applicationContext, "TASKS_CHANNEL")
-            .setContentTitle("Task Due Soon")
-            .setContentText("Task: $taskName is due soon!")
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .build()
+        val notification =
+            NotificationCompat
+                .Builder(applicationContext, "TASKS_CHANNEL")
+                .setContentTitle("Task Due Soon")
+                .setContentText("Task: $taskName is due soon!")
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .build()
 
         notificationManager.notify(1, notification)
     }
 }
 
-fun scheduleNotification(context: Context, dueDate: String, taskName: String) {
+fun scheduleNotification(
+    context: Context,
+    dueDate: String,
+    taskName: String,
+) {
     val currentTime = System.currentTimeMillis()
     val dueTime = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(dueDate)?.time ?: return
 
     if (dueTime > currentTime) {
         val delay = dueTime - currentTime
 
-        val workRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
-            .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-            .setInputData(workDataOf("TASK_NAME" to taskName))
-            .build()
+        val workRequest =
+            OneTimeWorkRequest
+                .Builder(NotificationWorker::class.java)
+                .setInitialDelay(delay, TimeUnit.MILLISECONDS)
+                .setInputData(workDataOf("TASK_NAME" to taskName))
+                .build()
 
         WorkManager.getInstance(context).enqueue(workRequest)
     }

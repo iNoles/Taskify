@@ -15,8 +15,8 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.text.Text
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.jonathansteele.Database
-import com.jonathansteele.taskify.R
 import com.jonathansteele.taskify.DatabaseHelper
+import com.jonathansteele.taskify.R
 
 class Top3AppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(

@@ -72,7 +72,7 @@ fun EventInputs(
     val names = remember { mutableStateOf("") }
     val hiddenState = remember { mutableStateOf(false) }
     val selectedOptionText = remember { mutableStateOf(pages[0]) }
-    val dueDueState = remember {  mutableStateOf("") }
+    val dueDueState = remember { mutableStateOf("") }
     val priority = remember { mutableStateOf(Priority.LOW) }
 
     task?.let {
@@ -222,22 +222,23 @@ fun FormDisplay(
 }
 
 @Composable
-fun DatePicker(
-    selectedDate: MutableState<String>
-) {
+fun DatePicker(selectedDate: MutableState<String>) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
     val year = calendar.get(Calendar.YEAR)
     val month = calendar.get(Calendar.MONTH)
     val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-    val datePickerDialog = DatePickerDialog(
-        context,
-        { _, selectedYear, selectedMonth, selectedDay ->
-            selectedDate.value = "$selectedYear-${selectedMonth + 1}-$selectedDay"
-        },
-        year, month, day
-    )
+    val datePickerDialog =
+        DatePickerDialog(
+            context,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                selectedDate.value = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+            },
+            year,
+            month,
+            day,
+        )
 
     Button(onClick = { datePickerDialog.show() }) {
         Text(text = "Pick Due Date")

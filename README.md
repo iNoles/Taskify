@@ -41,14 +41,14 @@ To run a local instance of Taskify, follow the steps below.
 2. **Open the project**:
 
 - Open Android Studio.
-- Click on ``File -> Open``.
+- Click on `File -> Open`.
 - Navigate to the directory where you cloned the project and select it.
-- Click on ``Open``.
+- Click on `Open`.
 
 3. **Build and Run**:
 
 - Ensure you have an Android device connected or an emulator running.
-- Click on the ``Run`` button in Android Studio.
+- Click on the `Run` button in Android Studio.
 
 ## Contributing
 
