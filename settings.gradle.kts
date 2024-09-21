@@ -14,5 +14,5 @@ dependencyResolutionManagement {
         maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
-rootProject.name = "Task List"
+rootProject.name = "Taskify"
 include(":app")
