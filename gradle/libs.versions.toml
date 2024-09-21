@@ -10,6 +10,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 koinAndroid = "4.0.0"
 reimaginedMaterial3 = "1.5.0"
+workRuntimeKtx = "2.9.1"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
@@ -33,6 +34,7 @@ junit = { module = "junit:junit", version.ref = "junit" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koinAndroid" }
 reimagined-material3 = { module = "dev.olshevski.navigation:reimagined-material3", version.ref = "reimaginedMaterial3" }
+androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 
 [plugins]
 sqldelight = { id = "app.cash.sqldelight", version.ref = "androidDriver"}

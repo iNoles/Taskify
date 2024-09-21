@@ -1,7 +1,7 @@
-package com.jonathansteele.tasklist
+package com.jonathansteele.taskify
 
 import android.app.Application
-import com.jonathansteele.tasklist.di.appModules
+import com.jonathansteele.taskify.di.appModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

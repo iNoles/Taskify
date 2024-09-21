@@ -1,9 +1,9 @@
-package com.jonathansteele.tasklist.navigation
+package com.jonathansteele.taskify.navigation
 
 import androidx.compose.runtime.Composable
-import com.jonathansteele.tasklist.DatabaseHelper
-import com.jonathansteele.tasklist.screen.AddNoteScreen
-import com.jonathansteele.tasklist.screen.TaskListScreen
+import com.jonathansteele.taskify.DatabaseHelper
+import com.jonathansteele.taskify.screen.AddNoteScreen
+import com.jonathansteele.taskify.screen.TaskListScreen
 import dev.olshevski.navigation.reimagined.NavBackHandler
 import dev.olshevski.navigation.reimagined.NavHost
 import dev.olshevski.navigation.reimagined.pop

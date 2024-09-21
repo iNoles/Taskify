@@ -5,6 +5,7 @@ CREATE TABLE Task (
   notes TEXT NOT NULL,
   priority TEXT NOT NULL DEFAULT "LOW",
   completedDate TEXT NOT NULL DEFAULT "0",
+  dueDate TEXT,
   hidden INTEGER NOT NULL
 );
 
@@ -16,15 +17,26 @@ ORDER BY CASE priority
             WHEN 'HIGH' THEN 1
             WHEN 'MEDIUM' THEN 2
             ELSE 3
-         END ASC;
+         END ASC,
+dueDate IS NOT NULL DESC,
+dueDate ASC;
 
 GetTop3TasksName:
 SELECT name
-FROM Task WHERE completedDate = '0' ORDER BY completedDate AND priority DESC LIMIT 3;
+FROM Task
+WHERE completedDate = '0'
+ORDER BY CASE priority
+            WHEN 'HIGH' THEN 1
+            WHEN 'MEDIUM' THEN 2
+            ELSE 3
+         END ASC,
+         dueDate IS NOT NULL DESC,
+         dueDate ASC
+LIMIT 3;
 
 insertTask:
-INSERT OR REPLACE INTO Task(id, listId, name, notes, priority, completedDate, hidden)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO Task(id, listId, name, notes, priority, completedDate, dueDate, hidden)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteTaskById:
 DELETE FROM Task WHERE id = :id;

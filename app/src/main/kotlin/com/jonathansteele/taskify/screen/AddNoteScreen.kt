@@ -1,5 +1,6 @@
-package com.jonathansteele.tasklist.screen
+package com.jonathansteele.taskify.screen
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,18 +25,21 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathansteele.Task
 import com.jonathansteele.TaskList
-import com.jonathansteele.tasklist.DatabaseHelper
-import com.jonathansteele.tasklist.Priority
-import com.jonathansteele.tasklist.composable.PriorityChips
-import com.jonathansteele.tasklist.composable.TaskDropDown
-import com.jonathansteele.tasklist.theme.TaskListTheme
+import com.jonathansteele.taskify.DatabaseHelper
+import com.jonathansteele.taskify.Priority
+import com.jonathansteele.taskify.composable.PriorityChips
+import com.jonathansteele.taskify.composable.TaskDropDown
+import com.jonathansteele.taskify.scheduleNotification
+import com.jonathansteele.taskify.theme.TaskListTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,11 +66,13 @@ fun EventInputs(
     task: Task? = null,
     goBack: () -> Unit,
 ) {
+    val context = LocalContext.current
     val pages = database.getAllPages()
     val notes = remember { mutableStateOf("") }
     val names = remember { mutableStateOf("") }
     val hiddenState = remember { mutableStateOf(false) }
     val selectedOptionText = remember { mutableStateOf(pages[0]) }
+    val dueDueState = remember {  mutableStateOf("") }
     val priority = remember { mutableStateOf(Priority.LOW) }
 
     task?.let {
@@ -84,6 +90,7 @@ fun EventInputs(
         selectedOptionText = selectedOptionText,
         notes = notes,
         priority = priority,
+        dueState = dueDueState,
         hiddenState = hiddenState,
     ) {
         val scope = CoroutineScope(Dispatchers.Main)
@@ -94,8 +101,13 @@ fun EventInputs(
                 notes = notes.value,
                 listId = selectedOptionText.value.id,
                 priority = priority.value,
+                dueDate = dueDueState.value,
                 hidden = if (hiddenState.value) 1L else 0L,
             )
+
+            // Schedule notification
+            scheduleNotification(context, dueDueState.value, names.value)
+
             goBack()
         }
     }
@@ -109,6 +121,7 @@ fun FormDisplay(
     selectedOptionText: MutableState<TaskList>,
     notes: MutableState<String>,
     priority: MutableState<Priority>,
+    dueState: MutableState<String>,
     hiddenState: MutableState<Boolean>,
     buttonClick: () -> Unit,
 ) {
@@ -163,6 +176,22 @@ fun FormDisplay(
 
         Spacer(modifier = Modifier.padding(4.dp))
 
+        Text(
+            text = "Pick a Due Date",
+            style = MaterialTheme.typography.bodyLarge,
+        )
+
+        DatePicker(selectedDate = dueState)
+
+        if (dueState.value.isNotEmpty()) {
+            Text(
+                text = "Due Date: ${dueState.value}",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(4.dp))
+
         Row {
             Checkbox(
                 checked = hiddenState.value,
@@ -193,6 +222,29 @@ fun FormDisplay(
 }
 
 @Composable
+fun DatePicker(
+    selectedDate: MutableState<String>
+) {
+    val context = LocalContext.current
+    val calendar = Calendar.getInstance()
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH)
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val datePickerDialog = DatePickerDialog(
+        context,
+        { _, selectedYear, selectedMonth, selectedDay ->
+            selectedDate.value = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+        },
+        year, month, day
+    )
+
+    Button(onClick = { datePickerDialog.show() }) {
+        Text(text = "Pick Due Date")
+    }
+}
+
+@Composable
 @Preview(showBackground = true)
 fun AddNoteScreenPreview() {
     TaskListTheme {
@@ -206,6 +258,7 @@ fun AddNoteScreenPreview() {
         val notes = remember { mutableStateOf("") }
         val priority = remember { mutableStateOf(Priority.LOW) }
         val hiddenState = remember { mutableStateOf(false) }
+        val dueState = remember { mutableStateOf("") }
         FormDisplay(
             PaddingValues(16.dp, 16.dp),
             names,
@@ -213,6 +266,7 @@ fun AddNoteScreenPreview() {
             selectedOptionText,
             notes,
             priority,
+            dueState,
             hiddenState,
         ) {}
     }

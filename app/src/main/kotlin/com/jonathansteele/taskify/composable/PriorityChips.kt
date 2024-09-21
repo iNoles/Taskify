@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist.composable
+package com.jonathansteele.taskify.composable
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jonathansteele.tasklist.Priority
+import com.jonathansteele.taskify.Priority
 
 @Composable
 fun PriorityChips(priority: MutableState<Priority>) {

@@ -1,6 +1,5 @@
-package com.jonathansteele.tasklist.screen
+package com.jonathansteele.taskify.screen
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,8 +30,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.jonathansteele.Task
-import com.jonathansteele.tasklist.DatabaseHelper
-import com.jonathansteele.tasklist.navigation.Screen
+import com.jonathansteele.taskify.DatabaseHelper
+import com.jonathansteele.taskify.navigation.Screen
 import dev.olshevski.navigation.reimagined.NavController
 import dev.olshevski.navigation.reimagined.navigate
 import kotlinx.coroutines.launch
@@ -73,7 +72,6 @@ fun TaskListScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GetListTitleFromDatabase(database: DatabaseHelper) {
     val pagerState =

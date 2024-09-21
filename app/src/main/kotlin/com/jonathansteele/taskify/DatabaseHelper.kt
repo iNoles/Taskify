@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist
+package com.jonathansteele.taskify
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 /**
- * com.jonathansteele.tasklist.DatabaseHelper
+ * com.jonathansteele.taskify.DatabaseHelper
  * This class act like a helper between application and sqldelight
  */
 class DatabaseHelper(
@@ -38,6 +38,7 @@ class DatabaseHelper(
         notes: String,
         listId: Long,
         priority: Priority,
+        dueDate: String?,
         id: Long? = null,
         hidden: Long,
     ) {
@@ -48,6 +49,7 @@ class DatabaseHelper(
                 name = name,
                 notes = notes,
                 completedDate = "0",
+                dueDate = dueDate,
                 priority = priority.name,
                 hidden = hidden,
             )
@@ -66,6 +68,7 @@ class DatabaseHelper(
                 notes = task.notes,
                 completedDate = completedDate,
                 priority = task.priority,
+                dueDate = task.dueDate,
                 hidden = task.hidden,
             )
         }

@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist
+package com.jonathansteele.taskify
 
 enum class Priority {
     HIGH,

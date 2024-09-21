@@ -1,10 +1,11 @@
-package com.jonathansteele.tasklist.composable
+package com.jonathansteele.taskify.composable
 
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -33,7 +34,7 @@ fun TaskDropDown(
         onExpandedChange = { expanded = !expanded },
     ) {
         TextField(
-            modifier = Modifier.menuAnchor(),
+            modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryEditable, true),
             readOnly = true,
             value = selectedOptionText.value.name,
             onValueChange = {},

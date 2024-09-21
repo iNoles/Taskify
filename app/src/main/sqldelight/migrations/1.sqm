@@ -1,2 +1,0 @@
-ALTER TABLE Task ADD COLUMN priority TEXT NOT NULL;
-UPDATE Task SET priority = 'LOW';

@@ -1,11 +1,11 @@
-package com.jonathansteele.tasklist.screen
+package com.jonathansteele.taskify.screen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.jonathansteele.tasklist.DatabaseHelper
-import com.jonathansteele.tasklist.navigation.AppNavigation
-import com.jonathansteele.tasklist.theme.TaskListTheme
+import com.jonathansteele.taskify.DatabaseHelper
+import com.jonathansteele.taskify.navigation.AppNavigation
+import com.jonathansteele.taskify.theme.TaskListTheme
 import org.koin.android.ext.android.inject
 
 class MainActivity : ComponentActivity() {

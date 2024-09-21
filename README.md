@@ -1,53 +1,54 @@
-# Taskify Android App [Work in progress 🚧]
+# Taskify Android App [Work in Progress 🚧]
 
-Taskify is an Android application for managing personal and business tasks, built with Kotlin and Jetpack Compose. Utilizing SQLDelight for local-only database management, Taskify provides a sleek and efficient way to stay organized.
+Taskify is an Android application designed to help users manage personal and business tasks efficiently. Built with **Kotlin** and **Jetpack Compose**, Taskify offers a modern, sleek interface and uses **SQLDelight** for local database management, providing a smooth experience without cloud dependency.
 
-The app is currently in early development and unavailable on the Play Store.
+The app is currently in early development and not available on the Google Play Store yet.
 
 ## Features
 
-- **Jetpack Compose**: Modern UI toolkit for building native Android UI.
-- **Kotlin**: A modern programming language that makes Android development faster and more enjoyable.
-- **SQLDelight**: A Kotlin Multiplatform database library that provides a type-safe API to interact with an SQLite database, for local-only storage.
-- **Task Creation**: Quickly add new tasks to stay organized.
-- **Task Editing**: Easily edit tasks to update their details.
-- **Task Deletion**: Effortlessly delete tasks you no longer need.
-- **Task Prioritization**: Assign priorities to tasks to manage your workflow effectively.
-- **Dark Mode (System)**: Supports system-level dark mode settings for comfortable viewing.
-- **Glance Widgets**: View tasks at a glance with home screen widgets.
-- **Catalogs**: Organize tasks into customizable catalogs (e.g., personal, business).
+- **Jetpack Compose**: Utilizes the modern UI toolkit for building responsive, native Android UIs.
+- **Kotlin**: A modern programming language enhancing Android development speed and quality.
+- **SQLDelight**: A type-safe Kotlin Multiplatform library to interact with a local SQLite database.
+- **Task Creation & Editing**: Easily create, edit, and manage your tasks.
+- **Task Deletion**: Remove unnecessary tasks with ease.
+- **Task Prioritization**: Assign priority levels (Low, Medium, High) for better task management.
+- **Dark Mode**: Seamless support for system-wide dark mode for improved visibility and comfort.
+- **Glance Widgets**: Access and view tasks directly from the home screen with widgets.
+- **Catalogs**: Organize tasks into personalized catalogs (e.g., Personal, Business) for better structure.
 
 ## Screenshots
 
-![Screenshot showing main screen](images/main_screen.png "Screenshot showing Main screen")
+![Screenshot of Main Screen](images/main_screen.png "Screenshot of Main Screen")
 
 ## Installation
 
-To get a local copy up and running, follow these simple steps.
+To run a local instance of Taskify, follow the steps below.
 
 ### Prerequisites
 
-- Android Studio
-- Kotlin 2.0+
-- Android SDK 35
+- **Android Studio**
+- **Kotlin 2.0+**
+- **Android SDK 35**
 
-### Clone the repository
+### Steps
 
-```sh
-git clone https://github.com/iNoles/TaskList.git
-```
+1. **Clone the repository**:
 
-### Open the project in Android Studio
+   ```bash
+   git clone https://github.com/iNoles/TaskList.git
+   ```
+
+2. **Open the project**:
 
 - Open Android Studio.
-- Click on File -> Open....
+- Click on ``File -> Open``.
 - Navigate to the directory where you cloned the project and select it.
-- Click on Open.
+- Click on ``Open``.
 
-### Build and Run
+3. **Build and Run**:
 
 - Ensure you have an Android device connected or an emulator running.
-- Click on the Run button in Android Studio.
+- Click on the ``Run`` button in Android Studio.
 
 ## Contributing
 

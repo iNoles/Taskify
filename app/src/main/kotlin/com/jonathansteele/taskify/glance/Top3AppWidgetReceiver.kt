@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist.glance
+package com.jonathansteele.taskify.glance
 
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver

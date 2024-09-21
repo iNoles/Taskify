@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist
+package com.jonathansteele.taskify
 
 import android.app.Application
 import androidx.test.core.app.ApplicationProvider
@@ -32,6 +32,7 @@ class DatabaseTest {
                 notes = "This is test",
                 listId = 0L,
                 priority = Priority.LOW,
+                dueDate = "",
                 hidden = 0L,
             )
             helper.insertTask(
@@ -39,6 +40,7 @@ class DatabaseTest {
                 notes = "Preparing for Interview",
                 listId = 0L,
                 priority = Priority.HIGH,
+                dueDate = "",
                 hidden = 0L,
             )
 

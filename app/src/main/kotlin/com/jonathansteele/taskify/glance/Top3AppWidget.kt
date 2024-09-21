@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist.glance
+package com.jonathansteele.taskify.glance
 
 import android.content.Context
 import android.os.Build
@@ -15,8 +15,8 @@ import androidx.glance.layout.fillMaxWidth
 import androidx.glance.text.Text
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import com.jonathansteele.Database
-import com.jonathansteele.tasklist.DatabaseHelper
-import com.jonathansteele.tasklist.R
+import com.jonathansteele.taskify.R
+import com.jonathansteele.taskify.DatabaseHelper
 
 class Top3AppWidget : GlanceAppWidget() {
     override suspend fun provideGlance(

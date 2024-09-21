@@ -1,4 +1,4 @@
-package com.jonathansteele.tasklist.navigation
+package com.jonathansteele.taskify.navigation
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
