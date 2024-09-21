@@ -1,6 +1,5 @@
 package com.jonathansteele.taskify.screen
 
-import android.app.DatePickerDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,11 +13,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -221,26 +222,42 @@ fun FormDisplay(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePicker(selectedDate: MutableState<String>) {
-    val context = LocalContext.current
-    val calendar = Calendar.getInstance()
-    val year = calendar.get(Calendar.YEAR)
-    val month = calendar.get(Calendar.MONTH)
-    val day = calendar.get(Calendar.DAY_OF_MONTH)
+    val datePickerState = rememberDatePickerState()
+    val datePickerShown = remember { mutableStateOf(false) }
 
-    val datePickerDialog =
+    if (datePickerShown.value) {
         DatePickerDialog(
-            context,
-            { _, selectedYear, selectedMonth, selectedDay ->
-                selectedDate.value = "$selectedYear-${selectedMonth + 1}-$selectedDay"
+            onDismissRequest = { datePickerShown.value = false },
+            confirmButton = {
+                Button(onClick = {
+                    val pickedDateMillis = datePickerState.selectedDateMillis
+                    if (pickedDateMillis != null) {
+                        val calendar =
+                            Calendar.getInstance().apply {
+                                timeInMillis = pickedDateMillis
+                            }
+                        selectedDate.value =
+                            "${calendar.get(Calendar.YEAR)}-${calendar.get(Calendar.MONTH) + 1}-${calendar.get(Calendar.DAY_OF_MONTH)}"
+                    }
+                    datePickerShown.value = false
+                }) {
+                    Text("OK")
+                }
             },
-            year,
-            month,
-            day,
-        )
+            dismissButton = {
+                Button(onClick = { datePickerShown.value = false }) {
+                    Text("Cancel")
+                }
+            },
+        ) {
+            DatePicker(selectedDate)
+        }
+    }
 
-    Button(onClick = { datePickerDialog.show() }) {
+    Button(onClick = { datePickerShown.value = true }) {
         Text(text = "Pick Due Date")
     }
 }
