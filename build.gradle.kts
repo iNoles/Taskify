@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.8.0-alpha03" apply false
+    id("com.android.application") version "8.8.0-alpha04" apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.sqldelight) apply false
     alias(libs.plugins.compose.compiler) apply false
