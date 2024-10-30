@@ -10,7 +10,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 koinAndroid = "4.0.0"
 reimaginedMaterial3 = "1.5.0"
-workRuntimeKtx = "2.9.1"
+workRuntimeKtx = "2.10.0"
 
 [libraries]
 android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "androidDriver" }
