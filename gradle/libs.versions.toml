@@ -8,7 +8,7 @@ espressoCore = "3.6.1"
 glance = "1.1.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
-koinAndroid = "4.0.0"
+koinAndroid = "4.0.1"
 reimaginedMaterial3 = "1.5.0"
 workRuntimeKtx = "2.10.0"
 
