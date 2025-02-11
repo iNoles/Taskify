@@ -1,4 +1,4 @@
-### Taskify 📋
+# Taskify 📋
 
 A simple yet powerful task management app for personal and business use, built with Jetpack Compose and Room Database. Taskify allows users to efficiently create, manage, and organize their tasks.
 
