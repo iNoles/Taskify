@@ -1,32 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
-
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id("com.android.application") version "8.8.0" apply false
+    alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.sqldelight) apply false
-    alias(libs.plugins.compose.compiler) apply false
-}
-
-allprojects {
-    tasks.withType<KotlinCompilationTask<*>>().configureEach {
-        compilerOptions {
-            // Treat all Kotlin warnings as errors
-            allWarningsAsErrors = true
-            freeCompilerArgs.addAll(
-                "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-                    layout.buildDirectory.asFile
-                        .get()
-                        .absolutePath + "/compose_metrics",
-            )
-            freeCompilerArgs.addAll(
-                "-P",
-                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-                    layout.buildDirectory.asFile
-                        .get()
-                        .absolutePath + "/compose_metrics",
-            )
-        }
-    }
+    alias(libs.plugins.kotlin.compose) apply false
+    id("com.google.devtools.ksp") version "2.1.10-1.0.29" apply false
 }

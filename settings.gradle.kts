@@ -1,9 +1,14 @@
 pluginManagement {
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
         gradlePluginPortal()
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
 dependencyResolutionManagement {
@@ -11,8 +16,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots")
     }
 }
+
 rootProject.name = "Taskify"
 include(":app")
