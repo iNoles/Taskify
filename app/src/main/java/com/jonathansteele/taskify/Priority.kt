@@ -1,7 +1,9 @@
 package com.jonathansteele.taskify
 
-enum class Priority(val value: Int) {
+enum class Priority(
+    val value: Int,
+) {
     HIGH(1),
     MEDIUM(2),
-    LOW(3)
+    LOW(3),
 }

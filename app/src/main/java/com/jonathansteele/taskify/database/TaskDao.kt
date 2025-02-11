@@ -8,24 +8,29 @@ import androidx.room.Update
 
 @Dao
 interface TaskDao {
-    @Query("""
+    @Query(
+        """
         SELECT * 
         FROM Task
         WHERE uid = :uid AND hidden = 0
-    """)
+    """,
+    )
     suspend fun getTaskById(uid: Int): Task
 
-    @Query("""
+    @Query(
+        """
         SELECT * 
         FROM Task
         WHERE listId = :listId AND hidden = 0
         ORDER BY priority ASC, 
             dueDate IS NOT NULL DESC,
             dueDate ASC
-    """)
+    """,
+    )
     suspend fun getAllTasksByListId(listId: Int): List<Task>
 
-    @Query("""
+    @Query(
+        """
         SELECT name
         FROM Task
         WHERE completedDate = '0'
@@ -33,7 +38,8 @@ interface TaskDao {
             dueDate IS NOT NULL DESC,
             dueDate ASC
         LIMIT 3
-    """)
+    """,
+    )
     suspend fun getTop3TasksName(): List<String>
 
     @Insert

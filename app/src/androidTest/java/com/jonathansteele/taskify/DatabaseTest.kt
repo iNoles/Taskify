@@ -23,8 +23,12 @@ class DatabaseTest {
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(
-            context, AppDatabase::class.java).build()
+        db =
+            Room
+                .inMemoryDatabaseBuilder(
+                    context,
+                    AppDatabase::class.java,
+                ).build()
         taskDao = db.taskDao()
     }
 
@@ -39,25 +43,29 @@ class DatabaseTest {
         runTest {
             var numItemsBeforeInsertion = taskDao.getAllTasksByListId(0).size
 
-            taskDao.insertTask(Task(
-                uid = 0,
-                name = "Test",
-                notes = "This is test",
-                listId = 0,
-                priority = Priority.LOW.value,
-                dueDate = "",
-                hidden = 0,
-            ))
+            taskDao.insertTask(
+                Task(
+                    uid = 0,
+                    name = "Test",
+                    notes = "This is test",
+                    listId = 0,
+                    priority = Priority.LOW.value,
+                    dueDate = "",
+                    hidden = 0,
+                ),
+            )
 
-            taskDao.insertTask(Task(
-                uid = 1,
-                name = "Interview",
-                notes = "Preparing for Interview",
-                listId = 0,
-                priority = Priority.HIGH.value,
-                dueDate = "",
-                hidden = 0,
-            ))
+            taskDao.insertTask(
+                Task(
+                    uid = 1,
+                    name = "Interview",
+                    notes = "Preparing for Interview",
+                    listId = 0,
+                    priority = Priority.HIGH.value,
+                    dueDate = "",
+                    hidden = 0,
+                ),
+            )
 
             var numItemsAfterInsertion = taskDao.getAllTasksByListId(0).size
 

@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity
 data class TaskList(
     @PrimaryKey val uid: Int,
-    val name: String
+    val name: String,
 )

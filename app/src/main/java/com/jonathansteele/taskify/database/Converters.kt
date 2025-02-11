@@ -5,16 +5,13 @@ import com.jonathansteele.taskify.Priority
 
 class Converters {
     @TypeConverter
-    fun fromPriority(priority: Priority): Int {
-        return priority.value
-    }
+    fun fromPriority(priority: Priority): Int = priority.value
 
     @TypeConverter
-    fun toPriority(value: Int): Priority {
-        return when (value) {
+    fun toPriority(value: Int): Priority =
+        when (value) {
             1 -> Priority.HIGH
             2 -> Priority.MEDIUM
             else -> Priority.LOW
         }
-    }
 }

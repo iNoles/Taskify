@@ -10,8 +10,24 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -26,7 +42,7 @@ import org.koin.compose.koinInject
 fun HomeScreen(
     navController: NavController,
     taskListDao: TaskListDao = koinInject(),
-    taskRepository: TaskRepository = koinInject()
+    taskRepository: TaskRepository = koinInject(),
 ) {
     Scaffold(
         topBar = {
@@ -39,10 +55,11 @@ fun HomeScreen(
         },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
         ) {
             GetListTitleFromDatabase(taskListDao, taskRepository)
         }
@@ -52,7 +69,7 @@ fun HomeScreen(
 @Composable
 fun GetListTitleFromDatabase(
     taskListDao: TaskListDao,
-    taskRepository: TaskRepository
+    taskRepository: TaskRepository,
 ) {
     val pages = remember { mutableStateListOf<TaskList>() }
     val pagerState = rememberPagerState { pages.size }
@@ -74,7 +91,7 @@ fun GetListTitleFromDatabase(
             Tab(
                 text = { Text(title.name) },
                 selected = pagerState.currentPage == index,
-                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } }
+                onClick = { coroutineScope.launch { pagerState.animateScrollToPage(index) } },
             )
         }
     }
@@ -84,7 +101,8 @@ fun GetListTitleFromDatabase(
             pager = tasks,
             onCheckedChange = { isChecked, task ->
                 coroutineScope.launch {
-                    task.completedDate = (if (isChecked) System.currentTimeMillis() else "0").toString()
+                    task.completedDate =
+                        (if (isChecked) System.currentTimeMillis() else "0").toString()
                     taskRepository.insertTask(task)
                 }
             },
@@ -92,7 +110,7 @@ fun GetListTitleFromDatabase(
                 coroutineScope.launch {
                     taskRepository.deleteTaskById(taskId)
                 }
-            }
+            },
         )
     }
 }
@@ -101,7 +119,7 @@ fun GetListTitleFromDatabase(
 fun ListPagerContent(
     pager: List<Task>,
     onCheckedChange: (Boolean, Task) -> Unit,
-    deleteChange: (Int) -> Unit
+    deleteChange: (Int) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.padding(16.dp)) {
         items(pager) { task ->
@@ -110,7 +128,7 @@ fun ListPagerContent(
                     leadingContent = {
                         Checkbox(
                             checked = task.completedDate != "0",
-                            onCheckedChange = { onCheckedChange(it, task) }
+                            onCheckedChange = { onCheckedChange(it, task) },
                         )
                     },
                     headlineContent = { Text(text = task.name) },
@@ -119,7 +137,7 @@ fun ListPagerContent(
                         IconButton(onClick = { deleteChange(task.uid) }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Delete")
                         }
-                    }
+                    },
                 )
             }
         }

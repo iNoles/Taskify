@@ -8,5 +8,6 @@ import androidx.room.TypeConverters
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun listDao(): TaskListDao
+
     abstract fun taskDao(): TaskDao
 }

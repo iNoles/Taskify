@@ -1,10 +1,33 @@
 package com.jonathansteele.taskify
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -17,7 +40,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,7 +61,7 @@ fun AddNoteScreen(
                 title = { Text(text = if (taskId == -1) "Add Task" else "Edit Task") },
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { paddingValues ->
         EventInputs(
             paddingValues = paddingValues,
@@ -45,7 +70,7 @@ fun AddNoteScreen(
             taskListDao = listDao,
             snackbarHostState = snackbarHostState,
             scope = scope,
-            goBack = goBack
+            goBack = goBack,
         )
     }
 }
@@ -108,15 +133,16 @@ fun EventInputs(
         }
 
         scope.launch {
-            val task = Task(
-                uid = if (taskId == -1) 0 else taskId,
-                name = names.value,
-                notes = notes.value,
-                listId = selectedOptionText.value?.uid ?: 0,
-                priority = priority.value.value,
-                dueDate = dueState.value,
-                hidden = if (hiddenState.value) 1 else 0
-            )
+            val task =
+                Task(
+                    uid = if (taskId == -1) 0 else taskId,
+                    name = names.value,
+                    notes = notes.value,
+                    listId = selectedOptionText.value?.uid ?: 0,
+                    priority = priority.value.value,
+                    dueDate = dueState.value,
+                    hidden = if (hiddenState.value) 1 else 0,
+                )
 
             if (taskId == -1) {
                 taskRepository.insertTask(task)
@@ -144,10 +170,11 @@ fun FormDisplay(
     buttonClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .padding(paddingValues)
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text("Enter Task Name", style = MaterialTheme.typography.bodyLarge)
@@ -187,9 +214,10 @@ fun FormDisplay(
 
         Button(
             onClick = buttonClick,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
             shape = MaterialTheme.shapes.extraLarge,
         ) {
             Text("Save Task", style = MaterialTheme.typography.bodyLarge)
@@ -210,10 +238,11 @@ fun DatePicker(selectedDate: MutableState<String>) {
                 Button(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
                         val calendar = Calendar.getInstance().apply { timeInMillis = millis }
-                        selectedDate.value = SimpleDateFormat(
-                            "yyyy-MM-dd",
-                            Locale.getDefault()
-                        ).format(calendar.time)
+                        selectedDate.value =
+                            SimpleDateFormat(
+                                "yyyy-MM-dd",
+                                Locale.getDefault(),
+                            ).format(calendar.time)
                     }
                     datePickerShown.value = false
                 }) {
@@ -235,6 +264,4 @@ fun DatePicker(selectedDate: MutableState<String>) {
     }
 }
 
-fun getTodayDate(): String {
-    return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-}
+fun getTodayDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

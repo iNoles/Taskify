@@ -15,5 +15,5 @@ data class Task(
     var dueDate: String?,
     var hidden: Int,
     @ColumnInfo(index = true)
-    var listId: Int
+    var listId: Int,
 )

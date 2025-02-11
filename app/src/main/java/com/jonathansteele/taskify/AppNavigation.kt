@@ -12,7 +12,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "home",
     ) {
         composable("home") {
             HomeScreen(navController)

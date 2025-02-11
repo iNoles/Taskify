@@ -26,7 +26,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun AppNavigationPreview() {
@@ -35,7 +34,8 @@ fun AppNavigationPreview() {
         application = {
             androidContext(context)
             modules(appModules)
-    }) {
+        },
+    ) {
         TaskifyTheme {
             AppNavigation()
         }
