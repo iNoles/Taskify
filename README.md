@@ -33,7 +33,8 @@ cd Taskify
 
 ## 📸 Screenshots
 
-Coming soon!
+![Personal](images/personal.png)
+![Work](images/work.png)
 
 ## Contributing
 
