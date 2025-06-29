@@ -6,9 +6,9 @@ import com.jonathansteele.taskify.database.TaskDao
 class TaskRepository(
     val taskDao: TaskDao,
 ) {
-    suspend fun getTaskById(uint: Int): Task = taskDao.getTaskById(uint)
+    suspend fun getTaskById(uint: Int) = taskDao.getTaskById(uint)
 
-    suspend fun getAllTasksByListId(listId: Int): List<Task> = taskDao.getAllTasksByListId(listId)
+    fun getAllTasksByListIdFlow(listId: Int) = taskDao.getAllTasksByListIdFlow(listId)
 
     suspend fun insertTask(task: Task) {
         taskDao.insertTask(task)

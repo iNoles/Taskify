@@ -9,7 +9,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import org.koin.android.ext.koin.androidContext
-import org.koin.androidx.compose.KoinAndroidContext
 import org.koin.compose.KoinApplication
 
 class MainActivity : ComponentActivity() {
@@ -17,10 +16,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            KoinAndroidContext {
-                TaskifyTheme {
-                    AppNavigation()
-                }
+            TaskifyTheme {
+                AppNavigation()
             }
         }
     }

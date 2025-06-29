@@ -1,16 +1,17 @@
 package com.jonathansteele.taskify.glance
 
 import android.content.Context
+import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
-import androidx.glance.LocalContext
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.lazy.LazyColumn
 import androidx.glance.appwidget.lazy.items
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.fillMaxWidth
+import androidx.glance.layout.padding
 import androidx.glance.text.Text
 import com.jonathansteele.taskify.R
 import com.jonathansteele.taskify.database.TaskDao
@@ -21,19 +22,25 @@ class Top3AppWidget : GlanceAppWidget() {
         context: Context,
         id: GlanceId,
     ) {
-        // Get Koin instance to access the database
         val koin = GlobalContext.get()
         val taskDao: TaskDao = koin.get()
         val tasks = taskDao.getTop3TasksName()
+
         provideContent {
             GlanceTheme(GlanceTheme.colors) {
-                LazyColumn(modifier = GlanceModifier.background(GlanceTheme.colors.surfaceVariant)) {
+                LazyColumn(
+                    modifier =
+                        GlanceModifier
+                            .background(GlanceTheme.colors.surfaceVariant)
+                            .fillMaxWidth()
+                            .padding(8.dp),
+                ) {
                     item {
-                        Text(LocalContext.current.getString(R.string.app_name))
+                        Text(text = context.getString(R.string.app_name))
                     }
-                    items(tasks) {
+                    items(tasks) { taskName ->
                         Text(
-                            text = it,
+                            text = taskName,
                             modifier = GlanceModifier.fillMaxWidth(),
                         )
                     }
@@ -41,9 +48,4 @@ class Top3AppWidget : GlanceAppWidget() {
             }
         }
     }
-
-    /*@Composable
-    fun MyContent() {
-
-    }*/
 }

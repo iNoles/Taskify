@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
@@ -19,8 +20,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +32,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -52,26 +57,47 @@ fun AddNoteScreen(
     listDao: TaskListDao = koinInject(),
     goBack: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(text = if (taskId == -1) "Add Task" else "Edit Task") },
+                title = {
+                    Text(
+                        text = if (taskId == -1) "Add Task" else "Edit Task",
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        titleContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    ),
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
+        containerColor = MaterialTheme.colorScheme.background,
     ) { paddingValues ->
-        EventInputs(
-            paddingValues = paddingValues,
-            taskId = taskId,
-            taskRepository = taskRepository,
-            taskListDao = listDao,
-            snackbarHostState = snackbarHostState,
-            scope = scope,
-            goBack = goBack,
-        )
+        Surface(
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .padding(16.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant,
+            shape = MaterialTheme.shapes.large,
+            shadowElevation = 8.dp,
+        ) {
+            EventInputs(
+                paddingValues = PaddingValues(24.dp),
+                taskId = taskId,
+                taskRepository = taskRepository,
+                taskListDao = listDao,
+                snackBarHostState = snackBarHostState,
+                scope = scope,
+                goBack = goBack,
+            )
+        }
     }
 }
 
@@ -81,7 +107,7 @@ fun EventInputs(
     taskId: Int,
     taskRepository: TaskRepository,
     taskListDao: TaskListDao,
-    snackbarHostState: SnackbarHostState,
+    snackBarHostState: SnackbarHostState,
     scope: CoroutineScope,
     goBack: () -> Unit,
 ) {
@@ -89,29 +115,30 @@ fun EventInputs(
     val pages = remember { mutableStateOf<List<TaskList>>(emptyList()) }
     val selectedOptionText = remember { mutableStateOf<TaskList?>(null) }
 
+    val names = remember { mutableStateOf("") }
+    val notes = remember { mutableStateOf("") }
+    val hiddenState = remember { mutableStateOf(false) }
+    val dueState = remember { mutableStateOf(getTodayDate()) }
+    val priority = remember { mutableStateOf(Priority.LOW) }
+    val isCompleted = remember { mutableStateOf(false) }
+
     LaunchedEffect(Unit) {
         val fetchedPages = taskListDao.getAll()
         pages.value = fetchedPages
         selectedOptionText.value = fetchedPages.firstOrNull()
     }
 
-    val names = remember { mutableStateOf("") }
-    val notes = remember { mutableStateOf("") }
-    val hiddenState = remember { mutableStateOf(false) }
-    val dueState = remember { mutableStateOf(getTodayDate()) }
-    val priority = remember { mutableStateOf(Priority.LOW) }
-
     if (taskId != -1) {
         LaunchedEffect(taskId) {
-            taskRepository.getTaskById(taskId).let {
-                names.value = it.name
-                notes.value = it.notes
-                hiddenState.value = it.hidden == 1
-                selectedOptionText.value =
-                    pages.value.find { list -> list.uid == it.listId } ?: pages.value.firstOrNull()
-                priority.value = Priority.valueOf(it.priority.toString())
-                dueState.value = it.dueDate.takeIf { it?.isNotEmpty() == true } ?: getTodayDate()
-            }
+            val task = taskRepository.getTaskById(taskId)
+            names.value = task.name
+            notes.value = task.notes
+            hiddenState.value = task.hidden == 1
+            isCompleted.value = task.completedDate != Task.NOT_COMPLETED
+            selectedOptionText.value =
+                pages.value.find { list -> list.uid == task.listId } ?: pages.value.firstOrNull()
+            priority.value = Priority.valueOf(task.priority.toString())
+            dueState.value = task.dueDate.takeIf { it?.isNotEmpty() == true } ?: getTodayDate()
         }
     }
 
@@ -124,10 +151,11 @@ fun EventInputs(
         priority,
         dueState,
         hiddenState,
+        isCompleted,
     ) {
         if (names.value.isBlank() || notes.value.isBlank()) {
             scope.launch {
-                snackbarHostState.showSnackbar("Task name and notes cannot be empty")
+                snackBarHostState.showSnackbar("Task name and notes cannot be empty")
             }
             return@FormDisplay
         }
@@ -142,6 +170,12 @@ fun EventInputs(
                     priority = priority.value.value,
                     dueDate = dueState.value,
                     hidden = if (hiddenState.value) 1 else 0,
+                    completedDate =
+                        if (isCompleted.value) {
+                            System.currentTimeMillis().toString()
+                        } else {
+                            Task.NOT_COMPLETED
+                        },
                 )
 
             if (taskId == -1) {
@@ -150,8 +184,8 @@ fun EventInputs(
                 taskRepository.updateTask(task)
             }
 
-            scheduleNotification(context, dueState.value, names.value)
-            snackbarHostState.showSnackbar("Task saved successfully")
+            scheduleNotification(context, task.uid, dueState.value, task.name)
+            snackBarHostState.showSnackbar("Task saved successfully")
             goBack()
         }
     }
@@ -167,17 +201,17 @@ fun FormDisplay(
     priority: MutableState<Priority>,
     dueState: MutableState<String>,
     hiddenState: MutableState<Boolean>,
+    isCompleted: MutableState<Boolean>,
     buttonClick: () -> Unit,
 ) {
     Column(
         modifier =
             Modifier
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
-        Text("Enter Task Name", style = MaterialTheme.typography.bodyLarge)
+        Text("Enter Task Name", style = MaterialTheme.typography.titleMedium)
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = names.value,
@@ -185,31 +219,63 @@ fun FormDisplay(
             placeholder = { Text("e.g. Task Name") },
             singleLine = true,
             isError = names.value.isEmpty(),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                ),
+            shape = MaterialTheme.shapes.medium,
         )
 
-        TaskDropDown(pages = pages, selectedOptionText = selectedOptionText)
+        TaskDropDown(taskLists = pages, selectedTaskList = selectedOptionText)
 
-        Text("Enter Task Notes", style = MaterialTheme.typography.bodyLarge)
+        Text("Enter Task Notes", style = MaterialTheme.typography.titleMedium)
         TextField(
             modifier = Modifier.fillMaxWidth(),
             value = notes.value,
             onValueChange = { notes.value = it },
             placeholder = { Text("e.g. Notes") },
             isError = notes.value.isEmpty(),
+            colors =
+                TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f),
+                ),
+            shape = MaterialTheme.shapes.medium,
         )
 
-        Text("Priority Level", style = MaterialTheme.typography.bodyLarge)
+        Text("Priority Level", style = MaterialTheme.typography.titleMedium)
         PriorityChips(priority)
 
-        Text("Due Date", style = MaterialTheme.typography.bodyLarge)
+        Text("Due Date", style = MaterialTheme.typography.titleMedium)
         DatePicker(dueState)
 
-        Row {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
+        ) {
             Checkbox(
                 checked = hiddenState.value,
                 onCheckedChange = { hiddenState.value = it },
             )
-            Text("Task Hidden", modifier = Modifier.padding(16.dp))
+            Text("Task Hidden", modifier = Modifier.padding(start = 8.dp))
+        }
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.padding(vertical = 4.dp),
+        ) {
+            Checkbox(
+                checked = isCompleted.value,
+                onCheckedChange = { isCompleted.value = it },
+            )
+            Text("Mark as Completed", modifier = Modifier.padding(start = 8.dp))
         }
 
         Button(
@@ -219,8 +285,9 @@ fun FormDisplay(
                     .fillMaxWidth()
                     .height(56.dp),
             shape = MaterialTheme.shapes.extraLarge,
+            colors = ButtonDefaults.filledTonalButtonColors(),
         ) {
-            Text("Save Task", style = MaterialTheme.typography.bodyLarge)
+            Text("Save Task", style = MaterialTheme.typography.titleMedium)
         }
     }
 }
@@ -239,10 +306,8 @@ fun DatePicker(selectedDate: MutableState<String>) {
                     datePickerState.selectedDateMillis?.let { millis ->
                         val calendar = Calendar.getInstance().apply { timeInMillis = millis }
                         selectedDate.value =
-                            SimpleDateFormat(
-                                "yyyy-MM-dd",
-                                Locale.getDefault(),
-                            ).format(calendar.time)
+                            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                .format(calendar.time)
                     }
                     datePickerShown.value = false
                 }) {
@@ -259,8 +324,13 @@ fun DatePicker(selectedDate: MutableState<String>) {
         }
     }
 
-    Button(onClick = { datePickerShown.value = true }) {
-        Text("Pick Due Date")
+    Button(
+        onClick = { datePickerShown.value = true },
+        shape = MaterialTheme.shapes.medium,
+        colors = ButtonDefaults.filledTonalButtonColors(),
+        modifier = Modifier.padding(vertical = 8.dp),
+    ) {
+        Text("Due: ${selectedDate.value}", style = MaterialTheme.typography.bodyLarge)
     }
 }
 

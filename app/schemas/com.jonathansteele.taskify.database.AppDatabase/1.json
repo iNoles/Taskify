@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f073d1fe7a09d58e8b30761310fb21e9",
+    "identityHash": "32cd8fbe071a31e8dee872832b0f4120",
     "entities": [
       {
         "tableName": "TaskList",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -22,13 +22,11 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "uid"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "Task",
@@ -67,8 +65,7 @@
           {
             "fieldPath": "dueDate",
             "columnName": "dueDate",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "hidden",
@@ -99,14 +96,12 @@
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Task_listId` ON `${TABLE_NAME}` (`listId`)"
           }
-        ],
-        "foreignKeys": []
+        ]
       }
     ],
-    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f073d1fe7a09d58e8b30761310fb21e9')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '32cd8fbe071a31e8dee872832b0f4120')"
     ]
   }
 }

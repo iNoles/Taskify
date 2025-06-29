@@ -7,8 +7,7 @@ import org.koin.dsl.module
 
 val appModules =
     module {
+        single { get<AppDatabase>().listDao() }
         single { DatabaseModule.provideDatabase(androidContext()) }
-        single { get<AppDatabase>().taskDao() }
-        single { get<AppDatabase>().taskDao() }
-        single { TaskRepository(get()) }
+        single { TaskRepository(get<AppDatabase>().taskDao()) }
     }

@@ -5,6 +5,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class TaskList(
-    @PrimaryKey val uid: Int,
+    @PrimaryKey(autoGenerate = true) val uid: Int = 0,
     val name: String,
 )

@@ -1,8 +1,10 @@
 package com.jonathansteele.taskify
 
+import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -17,32 +19,57 @@ class NotificationWorker(
     params: WorkerParameters,
 ) : Worker(context, params) {
     override fun doWork(): Result {
+        val taskId = inputData.getInt("TASK_ID", -1)
         val taskName = inputData.getString("TASK_NAME") ?: return Result.failure()
 
-        // Trigger local notification here
-        triggerNotification(taskName)
+        triggerNotification(taskId, taskName)
 
         return Result.success()
     }
 
-    private fun triggerNotification(taskName: String) {
+    private fun triggerNotification(
+        taskId: Int,
+        taskName: String,
+    ) {
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        // Create notification channel if needed
+        createNotificationChannel(notificationManager)
+
         val notification =
             NotificationCompat
-                .Builder(applicationContext, "TASKS_CHANNEL")
+                .Builder(applicationContext, CHANNEL_ID)
                 .setContentTitle("Task Due Soon")
                 .setContentText("Task: $taskName is due soon!")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .build()
 
-        notificationManager.notify(1, notification)
+        // Use taskId as unique notification id
+        notificationManager.notify(taskId, notification)
+    }
+
+    private fun createNotificationChannel(notificationManager: NotificationManager) {
+        val channel =
+            NotificationChannel(
+                CHANNEL_ID,
+                "Task Notifications",
+                NotificationManager.IMPORTANCE_DEFAULT,
+            ).apply {
+                description = "Notifications for due tasks"
+            }
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    companion object {
+        const val CHANNEL_ID = "TASKS_CHANNEL"
     }
 }
 
 fun scheduleNotification(
     context: Context,
+    taskId: Int,
     dueDate: String,
     taskName: String,
 ) {
@@ -56,9 +83,17 @@ fun scheduleNotification(
             OneTimeWorkRequest
                 .Builder(NotificationWorker::class.java)
                 .setInitialDelay(delay, TimeUnit.MILLISECONDS)
-                .setInputData(workDataOf("TASK_NAME" to taskName))
-                .build()
+                .setInputData(
+                    workDataOf(
+                        "TASK_ID" to taskId,
+                        "TASK_NAME" to taskName,
+                    ),
+                ).build()
 
-        WorkManager.getInstance(context).enqueue(workRequest)
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            "notify_task_$taskId",
+            ExistingWorkPolicy.REPLACE,
+            workRequest,
+        )
     }
 }

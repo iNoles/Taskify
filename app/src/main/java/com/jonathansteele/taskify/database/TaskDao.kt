@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TaskDao {
@@ -27,7 +28,7 @@ interface TaskDao {
             dueDate ASC
     """,
     )
-    suspend fun getAllTasksByListId(listId: Int): List<Task>
+    fun getAllTasksByListIdFlow(listId: Int): Flow<List<Task>>
 
     @Query(
         """
