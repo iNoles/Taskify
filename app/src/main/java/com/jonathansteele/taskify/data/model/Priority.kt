@@ -1,4 +1,4 @@
-package com.jonathansteele.taskify
+package com.jonathansteele.taskify.data.model
 
 enum class Priority(
     val value: Int,
