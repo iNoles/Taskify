@@ -1,5 +1,7 @@
 package com.jonathansteele.taskify
 
+import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -35,12 +37,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jonathansteele.taskify.composable.PriorityChips
 import com.jonathansteele.taskify.composable.TaskDropDown
-import com.jonathansteele.taskify.database.Task
-import com.jonathansteele.taskify.database.TaskList
-import com.jonathansteele.taskify.database.TaskListDao
+import com.jonathansteele.taskify.data.model.Priority
+import com.jonathansteele.taskify.data.model.Task
+import com.jonathansteele.taskify.data.model.TaskList
+import com.jonathansteele.taskify.data.repository.TaskRepository
+import com.jonathansteele.taskify.notifications.TaskNotificationManager
+import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -54,7 +60,6 @@ import java.util.Locale
 fun AddNoteScreen(
     taskId: Int = -1,
     taskRepository: TaskRepository = koinInject(),
-    listDao: TaskListDao = koinInject(),
     goBack: () -> Unit,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
@@ -92,7 +97,6 @@ fun AddNoteScreen(
                 paddingValues = PaddingValues(24.dp),
                 taskId = taskId,
                 taskRepository = taskRepository,
-                taskListDao = listDao,
                 snackBarHostState = snackBarHostState,
                 scope = scope,
                 goBack = goBack,
@@ -106,7 +110,6 @@ fun EventInputs(
     paddingValues: PaddingValues,
     taskId: Int,
     taskRepository: TaskRepository,
-    taskListDao: TaskListDao,
     snackBarHostState: SnackbarHostState,
     scope: CoroutineScope,
     goBack: () -> Unit,
@@ -114,7 +117,6 @@ fun EventInputs(
     val context = LocalContext.current
     val pages = remember { mutableStateOf<List<TaskList>>(emptyList()) }
     val selectedOptionText = remember { mutableStateOf<TaskList?>(null) }
-
     val names = remember { mutableStateOf("") }
     val notes = remember { mutableStateOf("") }
     val hiddenState = remember { mutableStateOf(false) }
@@ -123,22 +125,28 @@ fun EventInputs(
     val isCompleted = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        val fetchedPages = taskListDao.getAll()
-        pages.value = fetchedPages
-        selectedOptionText.value = fetchedPages.firstOrNull()
+        taskRepository
+            .getTasksList()
+            .onSuccess { lists -> pages.value = lists }
+            .onFailure { Log.e("AddNoteScreen", "Can't get Tasks List", it) }
     }
 
     if (taskId != -1) {
         LaunchedEffect(taskId) {
             val task = taskRepository.getTaskById(taskId)
-            names.value = task.name
-            notes.value = task.notes
-            hiddenState.value = task.hidden == 1
-            isCompleted.value = task.completedDate != Task.NOT_COMPLETED
-            selectedOptionText.value =
-                pages.value.find { list -> list.uid == task.listId } ?: pages.value.firstOrNull()
-            priority.value = Priority.valueOf(task.priority.toString())
-            dueState.value = task.dueDate.takeIf { it?.isNotEmpty() == true } ?: getTodayDate()
+            task.onSuccess { task ->
+                names.value = task.name
+                notes.value = task.notes
+                hiddenState.value = task.hidden == 1
+                isCompleted.value = task.completedDate != Task.NOT_COMPLETED
+                selectedOptionText.value =
+                    pages.value.find { it.id == task.listId } ?: pages.value.firstOrNull()
+                priority.value = Priority.valueOf(task.priority.toString())
+                dueState.value = task.dueDate.takeIf { it?.isNotEmpty() == true } ?: getTodayDate()
+            }
+            task.onFailure {
+                Log.e("AddNoteScreen", "Can't get Task by Id", it)
+            }
         }
     }
 
@@ -163,10 +171,10 @@ fun EventInputs(
         scope.launch {
             val task =
                 Task(
-                    uid = if (taskId == -1) 0 else taskId,
+                    id = if (taskId == -1) 0 else taskId,
                     name = names.value,
                     notes = notes.value,
-                    listId = selectedOptionText.value?.uid ?: 0,
+                    listId = selectedOptionText.value?.id ?: 0,
                     priority = priority.value.value,
                     dueDate = dueState.value,
                     hidden = if (hiddenState.value) 1 else 0,
@@ -183,8 +191,7 @@ fun EventInputs(
             } else {
                 taskRepository.updateTask(task)
             }
-
-            scheduleNotification(context, task.uid, dueState.value, task.name)
+            TaskNotificationManager.schedule(context, task.id, dueState.value, task.name)
             snackBarHostState.showSnackbar("Task saved successfully")
             goBack()
         }
@@ -335,3 +342,19 @@ fun DatePicker(selectedDate: MutableState<String>) {
 }
 
 fun getTodayDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+
+@Preview(showBackground = true)
+@Composable
+fun AddNoteScreenPreview() {
+    TaskifyTheme {
+        AddNoteScreen(goBack = {})
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun AddNoteScreenDarkPreview() {
+    TaskifyTheme {
+        AddNoteScreen(goBack = {})
+    }
+}

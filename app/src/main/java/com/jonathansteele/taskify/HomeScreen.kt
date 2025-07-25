@@ -1,10 +1,10 @@
 package com.jonathansteele.taskify
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,7 +17,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.MailOutline
 import androidx.compose.material3.CardDefaults
@@ -39,37 +38,27 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jonathansteele.taskify.database.Task
-import com.jonathansteele.taskify.database.TaskListDao
-import com.jonathansteele.taskify.database.seedIfEmpty
+import com.jonathansteele.taskify.data.model.Task
+import com.jonathansteele.taskify.data.model.TaskListName
+import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onAddClick: () -> Unit,
     onEditClick: (Int) -> Unit,
-    taskListDao: TaskListDao = koinInject(),
-    taskRepository: TaskRepository = koinInject(),
+    viewModel: HomeViewModel = koinViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
-
-    // Seed data on launch
-    LaunchedEffect(Unit) {
-        coroutineScope.launch {
-            seedIfEmpty(taskListDao)
-        }
-    }
 
     Scaffold(
         topBar = {
@@ -91,74 +80,62 @@ fun HomeScreen(
             color = MaterialTheme.colorScheme.surfaceVariant,
             tonalElevation = 4.dp,
         ) {
-            GetListTitleFromDatabase(taskListDao, taskRepository, coroutineScope, onEditClick)
+            LoadTabRow(coroutineScope, viewModel, onEditClick)
         }
     }
 }
 
 @Composable
-fun GetListTitleFromDatabase(
-    taskListDao: TaskListDao,
-    taskRepository: TaskRepository,
+fun LoadTabRow(
     coroutineScope: CoroutineScope,
+    viewModel: HomeViewModel,
     onEditClick: (Int) -> Unit,
 ) {
-    val pagesState =
-        produceState(initialValue = emptyList()) {
-            value = taskListDao.getAll()
-        }
+    val pages =
+        listOf(
+            TaskListName.Personal,
+            TaskListName.Work,
+        )
+    val pagerState =
+        rememberPagerState(
+            initialPage = 0,
+            pageCount = { pages.size },
+        )
 
-    val pages = pagesState.value
+    val tasksByList by viewModel.tasksByList.collectAsState()
 
-    if (pages.isNotEmpty()) {
-        val pagerState =
-            rememberPagerState(
-                initialPage = 0,
-                pageCount = { pages.size },
-            )
+    // Load tasks for the first tab initially
+    LaunchedEffect(pagerState.currentPage) {
+        viewModel.loadTasksFor(pages[pagerState.currentPage])
+    }
 
-        val currentList = pages.getOrNull(pagerState.currentPage)
-        val tasksFlow = currentList?.let { taskRepository.getAllTasksByListIdFlow(it.uid) }
-        val tasks by tasksFlow?.collectAsState(initial = emptyList()) ?: remember { mutableStateOf(emptyList()) }
+    Column {
+        SecondaryTabRow(
+            pagerState.currentPage,
+            tabs = {
+                pages.forEachIndexed { index, page ->
+                    Tab(
+                        text = { Text(page.name) },
+                        selected = pagerState.currentPage == index,
+                        onClick = {
+                            coroutineScope.launch {
+                                pagerState.animateScrollToPage(index)
+                            }
+                        },
+                    )
+                }
+            },
+        )
 
-        Column {
-            SecondaryTabRow(
-                pagerState.currentPage,
-                tabs = {
-                    pages.forEachIndexed { index, page ->
-                        Tab(
-                            text = { Text(page.name) },
-                            selected = pagerState.currentPage == index,
-                            onClick = {
-                                coroutineScope.launch {
-                                    pagerState.animateScrollToPage(index)
-                                }
-                            },
-                        )
-                    }
+        HorizontalPager(state = pagerState) { page ->
+            val tasks = tasksByList[pages[page]] ?: emptyList()
+            ListPagerContent(
+                tasks,
+                onCheckedChange = { isChecked, task ->
+                    viewModel.onTaskChecked(task, isChecked)
                 },
+                onEditClick,
             )
-
-            HorizontalPager(
-                state = pagerState,
-            ) {
-                ListPagerContent(
-                    tasks = tasks,
-                    onCheckedChange = { isChecked, task ->
-                        coroutineScope.launch {
-                            taskRepository.insertTask(task.withCompletion(isChecked))
-                        }
-                    },
-                    deleteChange = { taskId ->
-                        coroutineScope.launch {
-                            taskRepository.deleteTaskById(taskId)
-                        }
-                    },
-                    onEdit = { task ->
-                        onEditClick(task.uid)
-                    },
-                )
-            }
         }
     }
 }
@@ -167,8 +144,7 @@ fun GetListTitleFromDatabase(
 fun ListPagerContent(
     tasks: List<Task>,
     onCheckedChange: (Boolean, Task) -> Unit,
-    deleteChange: (Int) -> Unit,
-    onEdit: (Task) -> Unit,
+    onEdit: (Int) -> Unit,
 ) {
     if (tasks.isEmpty()) {
         Box(
@@ -221,18 +197,29 @@ fun ListPagerContent(
                             }
                         },
                         trailingContent = {
-                            Row {
-                                IconButton(onClick = { onEdit(task) }) {
-                                    Icon(Icons.Outlined.Edit, contentDescription = "Edit Task")
-                                }
-                                IconButton(onClick = { deleteChange(task.uid) }) {
-                                    Icon(Icons.Outlined.Delete, contentDescription = "Delete Task")
-                                }
+                            IconButton(onClick = { onEdit(task.id) }) {
+                                Icon(Icons.Outlined.Edit, contentDescription = "Edit Task")
                             }
                         },
                     )
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    TaskifyTheme {
+        HomeScreen(onAddClick = {}, onEditClick = {})
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun HomeScreenDarkPreview() {
+    TaskifyTheme {
+        HomeScreen(onAddClick = {}, onEditClick = {})
     }
 }

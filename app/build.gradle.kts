@@ -4,8 +4,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("com.google.devtools.ksp")
-    alias(libs.plugins.room)
+    // id("com.google.devtools.ksp")
+    // alias(libs.plugins.room)
+    alias(libs.plugins.kotlin.serialization) apply false
 }
 
 android {
@@ -45,9 +46,9 @@ android {
     buildFeatures {
         compose = true
     }
-    room {
+    /*room {
         schemaDirectory("$projectDir/schemas")
-    }
+    }*/
 }
 
 dependencies {
@@ -57,15 +58,22 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.koin.androidx.compose.navigation)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
+    implementation(libs.koin.androidx.compose)
+    // implementation(libs.androidx.room.runtime)
+    // implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.glance.appwidget)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.androidx.junit.ktx)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material.extended.icons)
-    ksp(libs.androidx.room.compiler)
+    // ksp(libs.androidx.room.compiler)
+
+    implementation(platform("io.github.jan-tennert.supabase:bom:3.2.2"))
+    implementation("io.github.jan-tennert.supabase:postgrest-kt")
+    implementation("io.github.jan-tennert.supabase:auth-kt")
+    implementation("io.github.jan-tennert.supabase:realtime-kt")
+    implementation("io.ktor:ktor-client-okhttp:3.2.2")
+
     testImplementation(libs.junit)
     testImplementation(libs.koin.test.junit4)
     androidTestImplementation(libs.androidx.junit)

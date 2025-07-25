@@ -19,7 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jonathansteele.taskify.database.TaskList
+import com.jonathansteele.taskify.data.model.TaskList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +47,7 @@ fun TaskDropDown(
                     Modifier
                         .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryEditable, true),
                 readOnly = true,
-                value = selectedTaskList.value?.name ?: "",
+                value = selectedTaskList.value?.name?.name ?: "",
                 onValueChange = {},
                 trailingIcon = {
                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
@@ -72,7 +72,7 @@ fun TaskDropDown(
             ) {
                 taskLists.forEach { option ->
                     DropdownMenuItem(
-                        text = { Text(option.name) },
+                        text = { Text(option.name.name) },
                         onClick = {
                             selectedTaskList.value = option
                             expanded = false

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.jonathansteele.taskify.data.model.Priority
 import com.jonathansteele.taskify.database.AppDatabase
 import com.jonathansteele.taskify.database.Task
 import com.jonathansteele.taskify.database.TaskDao

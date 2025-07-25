@@ -14,12 +14,37 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "home",
+        startDestination = "login",
     ) {
         composable("home") {
             HomeScreen(
                 onAddClick = { navController.navigate("add") },
                 onEditClick = { taskId -> navController.navigate("edit/$taskId") },
+            )
+        }
+
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+            )
+        }
+
+        composable("register") {
+            RegisterScreen(
+                onRegisterSuccess = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                onSwitchToLogin = {
+                    navController.navigate("login") {
+                        popUpTo("register") { inclusive = true }
+                    }
+                },
             )
         }
 

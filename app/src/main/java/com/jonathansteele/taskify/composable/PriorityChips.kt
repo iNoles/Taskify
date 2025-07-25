@@ -14,7 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.jonathansteele.taskify.Priority
+import com.jonathansteele.taskify.data.model.Priority
 
 @Composable
 fun PriorityChips(
