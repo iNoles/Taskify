@@ -11,11 +11,6 @@ class TaskRepository(
     private val client: SupabaseClient,
     private val authRepository: AuthRepository,
 ) {
-    /*suspend fun insertTaskList(taskList: TaskList): Result<Unit> = safeCall {
-        client.from("task_lists").insert(taskList)
-        Unit
-    }*/
-
     suspend fun getTasksList() =
         safeCall {
             val userId = authRepository.currentUserId() ?: throw Exception("Not signed in")
@@ -68,17 +63,6 @@ class TaskRepository(
                     limit(1)
                 }.decodeSingleOrNull<Task>() ?: throw Exception("Task not found")
         }
-
-    /*suspend fun getTasks(): Result<List<Task>> = safeCall {
-        val userId = authRepository.currentUserId() ?: throw Exception("Not signed in")
-        client.from("tasks")
-            .select {
-                filter {
-                    eq("user_id", userId)
-                }
-            }
-            .decodeList<Task>()
-    }*/
 
     suspend fun updateTask(task: Task) =
         safeCall {

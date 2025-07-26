@@ -2,7 +2,6 @@ package com.jonathansteele.taskify
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.enums.EnumEntries
 
 suspend fun <T> safeCall(action: suspend () -> T): Result<T> =
     withContext(Dispatchers.IO) {
@@ -12,5 +11,3 @@ suspend fun <T> safeCall(action: suspend () -> T): Result<T> =
             Result.failure(e)
         }
     }
-
-fun <T : Enum<T>> EnumEntries<T>.names() = this.map { it.name }

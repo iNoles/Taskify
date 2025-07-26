@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jonathansteele.taskify.data.model.Task
 import com.jonathansteele.taskify.data.model.TaskListName
+import com.jonathansteele.taskify.data.repository.AuthRepository
 import com.jonathansteele.taskify.data.repository.TaskRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val taskRepository: TaskRepository,
+    private val authRepository: AuthRepository,
 ) : ViewModel() {
     private val _tasksByList = MutableStateFlow<Map<TaskListName, List<Task>>>(emptyMap())
     val tasksByList: StateFlow<Map<TaskListName, List<Task>>> = _tasksByList
@@ -53,6 +55,13 @@ class HomeViewModel(
                 }.onFailure {
                     Log.e("HomeViewModel", "Failed to delete task", it)
                 }
+        }
+    }
+
+    fun logout(onComplete: () -> Unit) {
+        viewModelScope.launch {
+            authRepository.signOut()
+            onComplete
         }
     }
 }

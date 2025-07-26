@@ -20,6 +20,11 @@ fun AppNavigation() {
             HomeScreen(
                 onAddClick = { navController.navigate("add") },
                 onEditClick = { taskId -> navController.navigate("edit/$taskId") },
+                onLogout = {
+                    navController.navigate("login") {
+                        popUpTo("home") { inclusive = true }
+                    }
+                },
             )
         }
 

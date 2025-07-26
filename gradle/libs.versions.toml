@@ -7,6 +7,7 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 activityCompose = "1.10.1"
 composeBom = "2025.07.00"
+ktorClientOkhttp = "3.2.2"
 navigationCompose = "2.9.2"
 material = "1.7.8"
 room = "2.7.2"
@@ -37,6 +38,7 @@ koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compos
 koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin" }
 androidx-work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntimeKtx" }
 androidx-junit-ktx = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "junitKtx" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktorClientOkhttp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

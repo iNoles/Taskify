@@ -17,6 +17,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Logout
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.MailOutline
@@ -58,15 +59,28 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    onAddClick: () -> Unit,
-    onEditClick: (Int) -> Unit,
+    onAddClick: () -> Unit = {},
+    onEditClick: (Int) -> Unit = {},
+    onLogout: () -> Unit = {},
     viewModel: HomeViewModel = koinViewModel(),
 ) {
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(title = { Text("Task List") })
+            CenterAlignedTopAppBar(
+                title = { Text("Task List") },
+                actions = {
+                    IconButton(onClick = {
+                        viewModel.logout(onComplete = onLogout)
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Outlined.Logout,
+                            contentDescription = "Log out",
+                        )
+                    }
+                },
+            )
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -263,7 +277,7 @@ fun EmptyTasksBox() {
 @Composable
 fun HomeScreenPreview() {
     TaskifyTheme {
-        HomeScreen(onAddClick = {}, onEditClick = {})
+        HomeScreen()
     }
 }
 
@@ -271,6 +285,6 @@ fun HomeScreenPreview() {
 @Composable
 fun HomeScreenDarkPreview() {
     TaskifyTheme {
-        HomeScreen(onAddClick = {}, onEditClick = {})
+        HomeScreen()
     }
 }
