@@ -1,6 +1,7 @@
 package com.jonathansteele.taskify
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,8 +33,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -129,81 +133,128 @@ fun LoadTabRow(
 
         HorizontalPager(state = pagerState) { page ->
             val tasks = tasksByList[pages[page]] ?: emptyList()
-            ListPagerContent(
-                tasks,
-                onCheckedChange = { isChecked, task ->
-                    viewModel.onTaskChecked(task, isChecked)
+            if (tasks.isEmpty()) {
+                EmptyTasksBox()
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(tasks, key = { it.id }) { task ->
+                        SwipeableTaskItem(
+                            task = task,
+                            onCheckedChange = { isChecked, task ->
+                                viewModel.onTaskChecked(
+                                    task,
+                                    isChecked,
+                                )
+                            },
+                            onEdit = onEditClick,
+                            onDelete = { viewModel.deleteTask(task.id) },
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SwipeableTaskItem(
+    task: Task,
+    onCheckedChange: (Boolean, Task) -> Unit,
+    onEdit: (Int) -> Unit,
+    onDelete: (Task) -> Unit,
+) {
+    val dismissState =
+        rememberSwipeToDismissBoxState(
+            initialValue = SwipeToDismissBoxValue.Settled,
+        )
+
+    LaunchedEffect(dismissState.currentValue) {
+        if (dismissState.currentValue != SwipeToDismissBoxValue.Settled) {
+            onDelete(task)
+            dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+        }
+    }
+
+    SwipeToDismissBox(
+        state = dismissState,
+        enableDismissFromStartToEnd = true,
+        enableDismissFromEndToStart = true,
+        backgroundContent = {
+            Box(
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 8.dp)
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(MaterialTheme.colorScheme.errorContainer)
+                        .padding(16.dp),
+                contentAlignment = Alignment.CenterEnd,
+            ) {
+                Text(
+                    text = "Delete",
+                    color = MaterialTheme.colorScheme.onErrorContainer,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
+        },
+    ) {
+        ElevatedCard(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp)),
+            elevation = CardDefaults.elevatedCardElevation(4.dp),
+        ) {
+            ListItem(
+                leadingContent = {
+                    Checkbox(
+                        checked = task.isCompleted,
+                        onCheckedChange = { isChecked -> onCheckedChange(isChecked, task) },
+                    )
                 },
-                onEditClick,
+                headlineContent = { Text(task.name) },
+                supportingContent = {
+                    if (task.notes.isNotBlank()) {
+                        Text(task.notes)
+                    }
+                },
+                trailingContent = {
+                    IconButton(onClick = { onEdit(task.id) }) {
+                        Icon(Icons.Outlined.Edit, contentDescription = "Edit Task")
+                    }
+                },
             )
         }
     }
 }
 
 @Composable
-fun ListPagerContent(
-    tasks: List<Task>,
-    onCheckedChange: (Boolean, Task) -> Unit,
-    onEdit: (Int) -> Unit,
-) {
-    if (tasks.isEmpty()) {
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(32.dp),
-            contentAlignment = Alignment.Center,
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    imageVector = Icons.Outlined.MailOutline,
-                    contentDescription = null,
-                    modifier = Modifier.size(64.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(modifier = Modifier.padding(8.dp))
-                Text(
-                    text = "No tasks yet",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
-                )
-            }
-        }
-    } else {
-        LazyColumn(
-            modifier = Modifier.padding(16.dp),
-            contentPadding = PaddingValues(bottom = 16.dp, top = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
-            items(tasks) { task ->
-                ElevatedCard(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(24.dp)),
-                    elevation = CardDefaults.elevatedCardElevation(4.dp),
-                ) {
-                    ListItem(
-                        leadingContent = {
-                            Checkbox(
-                                checked = task.isCompleted,
-                                onCheckedChange = { isChecked -> onCheckedChange(isChecked, task) },
-                            )
-                        },
-                        headlineContent = { Text(task.name) },
-                        supportingContent = {
-                            if (task.notes.isNotBlank()) {
-                                Text(task.notes)
-                            }
-                        },
-                        trailingContent = {
-                            IconButton(onClick = { onEdit(task.id) }) {
-                                Icon(Icons.Outlined.Edit, contentDescription = "Edit Task")
-                            }
-                        },
-                    )
-                }
-            }
+fun EmptyTasksBox() {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Icon(
+                imageVector = Icons.Outlined.MailOutline,
+                contentDescription = null,
+                modifier = Modifier.size(64.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            Spacer(modifier = Modifier.padding(8.dp))
+            Text(
+                text = "No tasks yet",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f),
+            )
         }
     }
 }

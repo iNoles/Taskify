@@ -37,4 +37,22 @@ class HomeViewModel(
                 }
         }
     }
+
+    fun deleteTask(taskId: Int) {
+        viewModelScope.launch {
+            taskRepository
+                .deleteTask(taskId)
+                .onSuccess {
+                    // Refresh tasks after delete
+                    _tasksByList.value =
+                        _tasksByList.value.toMutableMap().also {
+                            it.forEach { (list, tasks) ->
+                                it[list] = tasks.filterNot { task -> task.id == taskId }
+                            }
+                        }
+                }.onFailure {
+                    Log.e("HomeViewModel", "Failed to delete task", it)
+                }
+        }
+    }
 }
