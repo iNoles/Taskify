@@ -33,6 +33,4 @@ class AuthRepository(
         safeCall {
             client.auth.signOut()
         }
-
-    fun currentUserId(): String? = client.auth.currentUserOrNull()?.id
 }

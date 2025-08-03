@@ -5,7 +5,6 @@ import com.jonathansteele.taskify.data.repository.TaskRepository
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.viewModelOf
@@ -15,8 +14,8 @@ val appModules =
     module {
         single {
             createSupabaseClient(
-                supabaseUrl = "YOUR_SUPABASE_URL",
-                supabaseKey = "YOUR_SUPABASE_KEY",
+                supabaseUrl = BuildConfig.SUPABASE_URL,
+                supabaseKey = BuildConfig.SUPABASE_ANON_KEY,
             ) {
                 defaultSerializer =
                     KotlinXSerializer(
@@ -28,11 +27,10 @@ val appModules =
                     )
                 install(Auth)
                 install(Postgrest)
-                install(Realtime)
             }
         }
 
         single { AuthRepository(get()) }
-        single { TaskRepository(get(), get()) }
+        single { TaskRepository(get()) }
         viewModelOf(::HomeViewModel)
     }

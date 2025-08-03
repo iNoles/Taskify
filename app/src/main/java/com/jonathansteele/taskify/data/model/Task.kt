@@ -2,14 +2,13 @@ package com.jonathansteele.taskify.data.model
 
 @kotlinx.serialization.Serializable
 data class Task(
-    val id: Int = 0,
+    val id: Long = 0L,
     var name: String,
     var notes: String,
-    var priority: Int,
+    var priority: Priority,
     var completedDate: String = NOT_COMPLETED,
-    var dueDate: String? = null,
     var hidden: Int,
-    var listId: Int,
+    var listId: Long,
     var userId: String? = null,
     var sharedWith: List<String> = emptyList(),
 ) {

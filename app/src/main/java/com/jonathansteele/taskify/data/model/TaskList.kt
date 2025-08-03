@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TaskList(
-    val id: Int = 0,
+    val id: Long = 0L,
     val name: TaskListName, // Personal, Work, Shared
-    val ownerId: String,
 )

@@ -40,7 +40,7 @@ class HomeViewModel(
         }
     }
 
-    fun deleteTask(taskId: Int) {
+    fun deleteTask(taskId: Long) {
         viewModelScope.launch {
             taskRepository
                 .deleteTask(taskId)

@@ -58,7 +58,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNoteScreen(
-    taskId: Int = -1,
+    taskId: Long = -1L,
     taskRepository: TaskRepository = koinInject(),
     goBack: () -> Unit,
 ) {
@@ -70,7 +70,7 @@ fun AddNoteScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = if (taskId == -1) "Add Task" else "Edit Task",
+                        text = if (taskId == -1L) "Add Task" else "Edit Task",
                         style = MaterialTheme.typography.titleLarge,
                     )
                 },
@@ -108,7 +108,7 @@ fun AddNoteScreen(
 @Composable
 fun EventInputs(
     paddingValues: PaddingValues,
-    taskId: Int,
+    taskId: Long,
     taskRepository: TaskRepository,
     snackBarHostState: SnackbarHostState,
     scope: CoroutineScope,
@@ -131,7 +131,7 @@ fun EventInputs(
             .onFailure { Log.e("AddNoteScreen", "Can't get Tasks List", it) }
     }
 
-    if (taskId != -1) {
+    if (taskId != -1L) {
         LaunchedEffect(taskId) {
             val task = taskRepository.getTaskById(taskId)
             task.onSuccess { task ->
@@ -142,7 +142,6 @@ fun EventInputs(
                 selectedOptionText.value =
                     pages.value.find { it.id == task.listId } ?: pages.value.firstOrNull()
                 priority.value = Priority.valueOf(task.priority.toString())
-                dueState.value = task.dueDate.takeIf { it?.isNotEmpty() == true } ?: getTodayDate()
             }
             task.onFailure {
                 Log.e("AddNoteScreen", "Can't get Task by Id", it)
@@ -171,12 +170,11 @@ fun EventInputs(
         scope.launch {
             val task =
                 Task(
-                    id = if (taskId == -1) 0 else taskId,
+                    id = if (taskId == -1L) 0L else taskId,
                     name = names.value,
                     notes = notes.value,
                     listId = selectedOptionText.value?.id ?: 0,
-                    priority = priority.value.value,
-                    dueDate = dueState.value,
+                    priority = priority.value,
                     hidden = if (hiddenState.value) 1 else 0,
                     completedDate =
                         if (isCompleted.value) {
@@ -186,7 +184,7 @@ fun EventInputs(
                         },
                 )
 
-            if (taskId == -1) {
+            if (taskId == -1L) {
                 taskRepository.insertTask(task)
             } else {
                 taskRepository.updateTask(task)

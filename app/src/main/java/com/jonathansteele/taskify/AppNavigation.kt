@@ -57,7 +57,7 @@ fun AppNavigation() {
             route = "edit/{taskId}",
             arguments = listOf(navArgument("taskId") { type = NavType.IntType }),
         ) { backStackEntry ->
-            val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
+            val taskId = backStackEntry.arguments?.getLong("taskId") ?: -1L
             AddNoteScreen(taskId = taskId) {
                 navController.popBackStack()
             }

@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -8,6 +9,19 @@ plugins {
     // alias(libs.plugins.room)
     alias(libs.plugins.kotlin.serialization) apply false
 }
+
+// Load local.properties
+val localProperties =
+    Properties().apply {
+        val file = rootProject.file("local.properties")
+        if (file.exists()) {
+            file.inputStream().use { load(it) }
+        }
+    }
+
+fun getLocalProperty(key: String): String =
+    localProperties.getProperty(key)
+        ?: throw GradleException("Property '$key' not found in local.properties")
 
 android {
     namespace = "com.jonathansteele.taskify"
@@ -21,6 +35,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "SUPABASE_URL", "\"${getLocalProperty("SUPABASE_URL")}\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"${getLocalProperty("SUPABASE_ANON_KEY")}\"")
     }
 
     buildTypes {
@@ -45,6 +62,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     /*room {
         schemaDirectory("$projectDir/schemas")

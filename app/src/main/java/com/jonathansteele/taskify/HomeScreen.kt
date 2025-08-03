@@ -60,7 +60,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     onAddClick: () -> Unit = {},
-    onEditClick: (Int) -> Unit = {},
+    onEditClick: (Long) -> Unit = {},
     onLogout: () -> Unit = {},
     viewModel: HomeViewModel = koinViewModel(),
 ) {
@@ -107,7 +107,7 @@ fun HomeScreen(
 fun LoadTabRow(
     coroutineScope: CoroutineScope,
     viewModel: HomeViewModel,
-    onEditClick: (Int) -> Unit,
+    onEditClick: (Long) -> Unit,
 ) {
     val pages =
         listOf(
@@ -179,7 +179,7 @@ fun LoadTabRow(
 private fun SwipeableTaskItem(
     task: Task,
     onCheckedChange: (Boolean, Task) -> Unit,
-    onEdit: (Int) -> Unit,
+    onEdit: (Long) -> Unit,
     onDelete: (Task) -> Unit,
 ) {
     val dismissState =

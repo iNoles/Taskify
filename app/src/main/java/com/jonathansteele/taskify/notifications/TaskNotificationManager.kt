@@ -14,7 +14,7 @@ object TaskNotificationManager {
 
     fun schedule(
         context: Context,
-        taskId: Int,
+        taskId: Long,
         taskName: String,
         dueDate: String,
     ) {
@@ -44,12 +44,12 @@ object TaskNotificationManager {
 
     fun cancel(
         context: Context,
-        taskId: Int,
+        taskId: Long,
     ) {
         WorkManager.getInstance(context).cancelUniqueWork(getWorkName(taskId))
     }
 
-    private fun getWorkName(taskId: Int) = "notify_task_$taskId"
+    private fun getWorkName(taskId: Long) = "notify_task_$taskId"
 
     private fun parseDueTime(dueDate: String): Long? =
         try {

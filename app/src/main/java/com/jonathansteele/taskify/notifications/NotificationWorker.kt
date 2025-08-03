@@ -13,7 +13,7 @@ class NotificationWorker(
     params: WorkerParameters,
 ) : Worker(context, params) {
     override fun doWork(): Result {
-        val taskId = inputData.getInt("TASK_ID", 0)
+        val taskId = inputData.getLong("TASK_ID", 0L)
         val taskName = inputData.getString("TASK_NAME") ?: return Result.failure()
 
         val manager =
@@ -39,7 +39,7 @@ class NotificationWorker(
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .build()
 
-        manager.notify(taskId, notification)
+        manager.notify(taskId.toInt(), notification)
         return Result.success()
     }
 }

@@ -9,31 +9,20 @@ import io.github.jan.supabase.postgrest.from
 
 class TaskRepository(
     private val client: SupabaseClient,
-    private val authRepository: AuthRepository,
 ) {
     suspend fun getTasksList() =
         safeCall {
-            val userId = authRepository.currentUserId() ?: throw Exception("Not signed in")
-            client
-                .from("task_lists")
-                .select {
-                    filter {
-                        eq("owner_id", userId)
-                    }
-                }.decodeList<TaskList>()
+            client.from("task_lists").select().decodeList<TaskList>()
         }
 
     suspend fun getTasksByList(listName: TaskListName) =
         safeCall {
-            val userId = authRepository.currentUserId() ?: throw Exception("Not signed in")
-
             // Get the task list first
             val taskListId =
                 client
                     .from("task_lists")
                     .select {
                         filter {
-                            eq("owner_id", userId)
                             eq("name", listName.name)
                         }
                         limit(1)
@@ -54,7 +43,7 @@ class TaskRepository(
             Unit
         }
 
-    suspend fun getTaskById(taskId: Int) =
+    suspend fun getTaskById(taskId: Long) =
         safeCall {
             client
                 .from("tasks")
@@ -72,7 +61,7 @@ class TaskRepository(
             Unit
         }
 
-    suspend fun deleteTask(id: Int) =
+    suspend fun deleteTask(id: Long) =
         safeCall {
             client.from("tasks").delete {
                 filter { eq("id", id) }
