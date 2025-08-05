@@ -1,4 +1,4 @@
-package com.jonathansteele.taskify
+package com.jonathansteele.taskify.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -43,14 +43,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.jonathansteele.taskify.HomeViewModel
 import com.jonathansteele.taskify.data.model.Task
 import com.jonathansteele.taskify.data.model.TaskListName
+import com.jonathansteele.taskify.data.repository.FakeAuthRepository
+import com.jonathansteele.taskify.data.repository.FakeTaskRepository
 import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -277,7 +281,15 @@ fun EmptyTasksBox() {
 @Composable
 fun HomeScreenPreview() {
     TaskifyTheme {
-        HomeScreen()
+        val viewModel =
+            remember {
+                HomeViewModel(FakeTaskRepository(), FakeAuthRepository).apply {
+                    loadTasksFor(TaskListName.Personal)
+                    loadTasksFor(TaskListName.Work)
+                    loadTasksFor(TaskListName.Shared)
+                }
+            }
+        HomeScreen(viewModel = viewModel)
     }
 }
 
@@ -285,6 +297,14 @@ fun HomeScreenPreview() {
 @Composable
 fun HomeScreenDarkPreview() {
     TaskifyTheme {
-        HomeScreen()
+        val viewModel =
+            remember {
+                HomeViewModel(FakeTaskRepository(), FakeAuthRepository).apply {
+                    loadTasksFor(TaskListName.Personal)
+                    loadTasksFor(TaskListName.Work)
+                    loadTasksFor(TaskListName.Shared)
+                }
+            }
+        HomeScreen(viewModel = viewModel)
     }
 }

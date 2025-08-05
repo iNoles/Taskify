@@ -7,8 +7,8 @@ import io.github.jan.supabase.auth.providers.builtin.Email
 
 class AuthRepository(
     private val client: SupabaseClient,
-) {
-    suspend fun signUp(
+) : IAuthRepository {
+    override suspend fun signUp(
         email: String,
         password: String,
     ) = safeCall {
@@ -19,7 +19,7 @@ class AuthRepository(
         Unit
     }
 
-    suspend fun signIn(
+    override suspend fun signIn(
         email: String,
         password: String,
     ) = safeCall {
@@ -29,7 +29,7 @@ class AuthRepository(
         }
     }
 
-    suspend fun signOut() =
+    override suspend fun signOut() =
         safeCall {
             client.auth.signOut()
         }

@@ -1,4 +1,4 @@
-package com.jonathansteele.taskify
+package com.jonathansteele.taskify.screen
 
 import android.content.res.Configuration
 import android.util.Patterns.EMAIL_ADDRESS
@@ -36,16 +36,17 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jonathansteele.taskify.data.repository.AuthRepository
+import com.jonathansteele.taskify.data.repository.FakeAuthRepository
+import com.jonathansteele.taskify.data.repository.IAuthRepository
 import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @Composable
 fun RegisterScreen(
-    onRegisterSuccess: () -> Unit,
-    onSwitchToLogin: () -> Unit,
-    supabaseService: AuthRepository = koinInject(),
+    onRegisterSuccess: () -> Unit = {},
+    onSwitchToLogin: () -> Unit = {},
+    iAuthRepository: IAuthRepository = koinInject<IAuthRepository>(),
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -136,7 +137,7 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     scope.launch {
-                        val result = supabaseService.signUp(email, password)
+                        val result = iAuthRepository.signUp(email, password)
                         if (result.isSuccess) {
                             onRegisterSuccess()
                         } else {
@@ -186,7 +187,7 @@ fun isPasswordValid(
 @Composable
 fun RegisterScreenPreview() {
     TaskifyTheme {
-        RegisterScreen({}, {})
+        RegisterScreen(iAuthRepository = FakeAuthRepository)
     }
 }
 
@@ -194,6 +195,6 @@ fun RegisterScreenPreview() {
 @Composable
 fun RegisterScreenDarkPreview() {
     TaskifyTheme {
-        RegisterScreen({}, {})
+        RegisterScreen(iAuthRepository = FakeAuthRepository)
     }
 }

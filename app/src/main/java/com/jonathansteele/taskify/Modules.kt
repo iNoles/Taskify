@@ -7,6 +7,7 @@ import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -30,7 +31,7 @@ val appModules =
             }
         }
 
-        single { AuthRepository(get()) }
-        single { TaskRepository(get()) }
+        singleOf(::AuthRepository)
+        singleOf(::TaskRepository)
         viewModelOf(::HomeViewModel)
     }

@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.jonathansteele.taskify.navigation.AppNavigation
 import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 
 class MainActivity : ComponentActivity() {

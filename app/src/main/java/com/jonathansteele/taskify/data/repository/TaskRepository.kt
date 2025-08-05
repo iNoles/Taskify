@@ -9,13 +9,13 @@ import io.github.jan.supabase.postgrest.from
 
 class TaskRepository(
     private val client: SupabaseClient,
-) {
-    suspend fun getTasksList() =
+) : ITaskRepository {
+    override suspend fun getTasksList() =
         safeCall {
             client.from("task_lists").select().decodeList<TaskList>()
         }
 
-    suspend fun getTasksByList(listName: TaskListName) =
+    override suspend fun getTasksByList(listName: TaskListName) =
         safeCall {
             // Get the task list first
             val taskListId =
@@ -37,13 +37,13 @@ class TaskRepository(
                 }.decodeList<Task>()
         }
 
-    suspend fun insertTask(task: Task) =
+    override suspend fun insertTask(task: Task) =
         safeCall {
             client.from("tasks").insert(task)
             Unit
         }
 
-    suspend fun getTaskById(taskId: Long) =
+    override suspend fun getTaskById(taskId: Long) =
         safeCall {
             client
                 .from("tasks")
@@ -53,7 +53,7 @@ class TaskRepository(
                 }.decodeSingleOrNull<Task>() ?: throw Exception("Task not found")
         }
 
-    suspend fun updateTask(task: Task) =
+    override suspend fun updateTask(task: Task) =
         safeCall {
             client.from("tasks").update(task) {
                 filter { eq("id", task.id) }
@@ -61,7 +61,7 @@ class TaskRepository(
             Unit
         }
 
-    suspend fun deleteTask(id: Long) =
+    override suspend fun deleteTask(id: Long) =
         safeCall {
             client.from("tasks").delete {
                 filter { eq("id", id) }

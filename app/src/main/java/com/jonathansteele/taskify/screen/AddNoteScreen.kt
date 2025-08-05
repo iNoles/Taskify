@@ -1,4 +1,4 @@
-package com.jonathansteele.taskify
+package com.jonathansteele.taskify.screen
 
 import android.content.res.Configuration
 import android.util.Log
@@ -44,7 +44,8 @@ import com.jonathansteele.taskify.composable.TaskDropDown
 import com.jonathansteele.taskify.data.model.Priority
 import com.jonathansteele.taskify.data.model.Task
 import com.jonathansteele.taskify.data.model.TaskList
-import com.jonathansteele.taskify.data.repository.TaskRepository
+import com.jonathansteele.taskify.data.repository.FakeTaskRepository
+import com.jonathansteele.taskify.data.repository.ITaskRepository
 import com.jonathansteele.taskify.notifications.TaskNotificationManager
 import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import kotlinx.coroutines.CoroutineScope
@@ -59,8 +60,8 @@ import java.util.Locale
 @Composable
 fun AddNoteScreen(
     taskId: Long = -1L,
-    taskRepository: TaskRepository = koinInject(),
-    goBack: () -> Unit,
+    iTaskRepository: ITaskRepository = koinInject<ITaskRepository>(),
+    goBack: () -> Unit = {},
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -96,7 +97,7 @@ fun AddNoteScreen(
             EventInputs(
                 paddingValues = PaddingValues(24.dp),
                 taskId = taskId,
-                taskRepository = taskRepository,
+                itaskRepository = iTaskRepository,
                 snackBarHostState = snackBarHostState,
                 scope = scope,
                 goBack = goBack,
@@ -109,7 +110,7 @@ fun AddNoteScreen(
 fun EventInputs(
     paddingValues: PaddingValues,
     taskId: Long,
-    taskRepository: TaskRepository,
+    itaskRepository: ITaskRepository,
     snackBarHostState: SnackbarHostState,
     scope: CoroutineScope,
     goBack: () -> Unit,
@@ -125,7 +126,7 @@ fun EventInputs(
     val isCompleted = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        taskRepository
+        itaskRepository
             .getTasksList()
             .onSuccess { lists -> pages.value = lists }
             .onFailure { Log.e("AddNoteScreen", "Can't get Tasks List", it) }
@@ -133,7 +134,7 @@ fun EventInputs(
 
     if (taskId != -1L) {
         LaunchedEffect(taskId) {
-            val task = taskRepository.getTaskById(taskId)
+            val task = itaskRepository.getTaskById(taskId)
             task.onSuccess { task ->
                 names.value = task.name
                 notes.value = task.notes
@@ -185,9 +186,9 @@ fun EventInputs(
                 )
 
             if (taskId == -1L) {
-                taskRepository.insertTask(task)
+                itaskRepository.insertTask(task)
             } else {
-                taskRepository.updateTask(task)
+                itaskRepository.updateTask(task)
             }
             TaskNotificationManager.schedule(context, task.id, dueState.value, task.name)
             snackBarHostState.showSnackbar("Task saved successfully")
@@ -345,7 +346,7 @@ fun getTodayDate(): String = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 @Composable
 fun AddNoteScreenPreview() {
     TaskifyTheme {
-        AddNoteScreen(goBack = {})
+        AddNoteScreen(iTaskRepository = FakeTaskRepository())
     }
 }
 
@@ -353,6 +354,6 @@ fun AddNoteScreenPreview() {
 @Composable
 fun AddNoteScreenDarkPreview() {
     TaskifyTheme {
-        AddNoteScreen(goBack = {})
+        AddNoteScreen(iTaskRepository = FakeTaskRepository())
     }
 }

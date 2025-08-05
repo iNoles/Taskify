@@ -1,4 +1,4 @@
-package com.jonathansteele.taskify
+package com.jonathansteele.taskify.screen
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -13,20 +13,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -42,12 +44,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.jonathansteele.taskify.data.repository.AuthRepository
+import com.jonathansteele.taskify.R
+import com.jonathansteele.taskify.data.repository.FakeAuthRepository
+import com.jonathansteele.taskify.data.repository.IAuthRepository
 import com.jonathansteele.taskify.ui.theme.TaskifyTheme
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
@@ -56,8 +61,10 @@ import org.koin.compose.koinInject
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    onLoginSuccess: () -> Unit,
-    supabaseService: AuthRepository = koinInject(),
+    onLoginSuccess: () -> Unit = {},
+    onNavigateToRegister: () -> Unit = {},
+    onForgotPassword: () -> Unit = {},
+    authRepository: IAuthRepository = koinInject<IAuthRepository>(),
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -76,6 +83,7 @@ fun LoginScreen(
                     ),
             )
         },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         modifier = modifier.fillMaxSize(),
     ) { innerPadding ->
         Column(
@@ -127,13 +135,17 @@ fun LoginScreen(
                         textAlign = TextAlign.Center,
                     )
 
-                    // Email TextField
+                    // Email Field
                     OutlinedTextField(
                         value = email,
                         onValueChange = { email = it },
                         label = { Text("Email") },
+                        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
                         leadingIcon = {
-                            Icon(Icons.Default.Email, contentDescription = "Email icon")
+                            Icon(
+                                Icons.Default.Email,
+                                contentDescription = "Email icon",
+                            )
                         },
                         singleLine = true,
                         modifier =
@@ -142,13 +154,16 @@ fun LoginScreen(
                                 .padding(vertical = 8.dp),
                     )
 
-                    // Password TextField
+                    // Password Field
                     OutlinedTextField(
                         value = password,
                         onValueChange = { password = it },
                         label = { Text("Password") },
                         leadingIcon = {
-                            Icon(Icons.Default.Lock, contentDescription = "Password icon")
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = "Password icon",
+                            )
                         },
                         trailingIcon = {
                             IconButton(onClick = { showPassword = !showPassword }) {
@@ -168,18 +183,23 @@ fun LoginScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
+                    val isInputValid = email.isNotBlank() && password.isNotBlank()
+
                     // Sign In Button
-                    Button(
+                    ElevatedButton(
                         onClick = {
                             scope.launch {
-                                val result = supabaseService.signIn(email, password)
+                                val result = authRepository.signIn(email, password)
                                 if (result.isSuccess) {
                                     onLoginSuccess()
                                 } else {
-                                    snackBarHostState.showSnackbar(result.exceptionOrNull()?.message ?: "Login failed")
+                                    snackBarHostState.showSnackbar(
+                                        result.exceptionOrNull()?.message ?: "Login failed",
+                                    )
                                 }
                             }
                         },
+                        enabled = isInputValid,
                         modifier =
                             Modifier
                                 .fillMaxWidth()
@@ -188,12 +208,12 @@ fun LoginScreen(
                         elevation = ButtonDefaults.buttonElevation(4.dp),
                     ) {
                         Text(
-                            "Sign In",
+                            text = "Sign In",
                             style = MaterialTheme.typography.labelLarge,
-                            color = MaterialTheme.colorScheme.onPrimary,
                         )
                     }
 
+                    // Terms
                     Text(
                         text = "By signing in, you agree to our Terms and Service.",
                         style = MaterialTheme.typography.bodySmall,
@@ -205,9 +225,25 @@ fun LoginScreen(
                         textAlign = TextAlign.Center,
                     )
 
-                    // Forgot Password
-                    TextButton(onClick = { /* TODO: Handle Forgot Password */ }) {
-                        Text("Forgot password?")
+                    // Forgot Password Button
+                    TextButton(onClick = onForgotPassword) {
+                        Text(
+                            text = "Forgot password?",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+
+                    // Register Button
+                    TextButton(
+                        onClick = onNavigateToRegister,
+                        modifier = Modifier.padding(top = 8.dp),
+                        colors =
+                            ButtonDefaults.textButtonColors(
+                                contentColor = MaterialTheme.colorScheme.primary,
+                            ),
+                    ) {
+                        Text("Don’t have an account? Register")
                     }
                 }
             }
@@ -219,14 +255,14 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     TaskifyTheme {
-        LoginScreen(onLoginSuccess = {})
+        LoginScreen(authRepository = FakeAuthRepository)
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showBackground = true)
 @Composable
 fun LoginScreenDarkPreview() {
     TaskifyTheme {
-        LoginScreen(onLoginSuccess = {})
+        LoginScreen(authRepository = FakeAuthRepository)
     }
 }
